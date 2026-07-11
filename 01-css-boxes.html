@@ -28,7 +28,7 @@ body{
   font-family:'Karla',sans-serif;
   overflow:hidden;
 }
-.stage{position:relative;width:100%;height:100vh}
+.stage{position:relative;width:100%;height:100vh;height:100dvh}
 
 /* ---------- title act ---------- */
 .title{
@@ -176,6 +176,20 @@ body{
 
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.01ms !important;animation-delay:0s !important}
+}
+@media (max-width:640px){
+  .shelf{width:100%;padding:0 10px;flex-wrap:wrap;justify-content:center;gap:7px;top:14px}
+  .chip{font-size:10px;padding:6px 10px;letter-spacing:.08em}
+  .title p{padding:0 20px;font-size:15px}
+  .card{width:180px;margin-left:-90px;padding:16px 14px 12px}
+  .card h2{font-size:22px}
+  .card p{font-size:12px}
+  .box{width:150px;height:120px;margin-left:-75px}
+  .flap{width:75px;height:44px}
+  .finale h2{padding:0 18px}
+  .finale p{padding:0 18px}
+  .rail{font-size:10px;padding:0 12px;gap:10px;height:44px}
+  .rail .tc{min-width:86px}
 }
 </style>
 </head>

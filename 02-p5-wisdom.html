@@ -296,10 +296,12 @@
             color: var(--anthropic-mid-gray);
         }
 
-        /* Responsive - Stack on mobile */
+        /* Responsive - Stack on mobile, art first */
         @media (max-width: 600px) {
             .container {
-                flex-direction: column;
+                flex-direction: column-reverse;
+                padding: 12px;
+                gap: 14px;
             }
 
             .sidebar {
@@ -307,7 +309,7 @@
             }
 
             .canvas-area {
-                padding: 20px;
+                padding: 0;
             }
         }
     </style>

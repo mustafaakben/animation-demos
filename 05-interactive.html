@@ -106,6 +106,18 @@ body{
 }
 .hint .big{font-family:'Fraunces',serif;font-size:26px;color:#9ba1c0;display:block;margin-bottom:6px}
 @media (prefers-reduced-motion: reduce){*{animation-duration:.01ms !important;animation-delay:0s !important}}
+@media (max-width:760px){
+  body{overflow:auto}
+  .wrap{display:flex;flex-direction:column;height:auto;min-height:100vh;min-height:100dvh;padding:14px;gap:14px}
+  .stage{order:-1;min-height:46vh;min-height:46dvh}
+  .panel{padding:20px}
+  .panel h1{font-size:26px}
+  .log{height:130px;margin-top:4px}
+  .parcel{width:160px;height:120px;margin-left:-80px}
+  .counter{font-size:11px;top:14px;right:16px}
+  .hint{font-size:13px;max-width:28ch}
+  .hint .big{font-size:20px}
+}
 </style>
 </head>
 <body>
