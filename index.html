@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Five Reels — Animation Technique Demos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Karla:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#232946;--deep:#151a30;--chalk:#f4f4f0;--amber:#eebb4d;--kraft:#c98f4e;--verdigris:#7ebdb4}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:radial-gradient(120% 90% at 50% 0%,#2d3559 0%,var(--ink) 45%,var(--deep) 100%);
+  min-height:100vh;color:var(--chalk);font-family:'Karla',sans-serif;padding:64px 24px 90px}
+.page{max-width:900px;margin:0 auto}
+header{margin-bottom:56px}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.28em;color:var(--amber);text-transform:uppercase}
+h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(42px,7vw,74px);line-height:1.03;margin:14px 0 18px}
+h1 em{font-style:italic;color:var(--amber)}
+header p{color:#b9bdd0;font-size:17px;line-height:1.6;max-width:58ch}
+.reel{
+  display:grid;grid-template-columns:110px 1fr auto;gap:22px;align-items:center;
+  padding:26px 26px;border:1px solid #343d63;border-radius:14px;margin-bottom:18px;
+  background:rgba(21,26,48,.55);text-decoration:none;color:inherit;transition:.18s;
+}
+.reel:hover{border-color:var(--amber);background:rgba(21,26,48,.85);transform:translateX(6px)}
+.reel .num{
+  font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.1em;color:#8a90ad;
+  border-right:1px solid #343d63;padding-right:22px;line-height:2;
+}
+.reel .num b{display:block;font-size:30px;color:var(--chalk);font-weight:500}
+.reel h2{font-family:'Fraunces',serif;font-weight:600;font-size:25px;margin-bottom:5px}
+.reel p{color:#b9bdd0;font-size:14.5px;line-height:1.55;max-width:52ch}
+.reel .tech{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--verdigris);
+  text-transform:uppercase;margin-bottom:7px}
+.reel .go{font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--amber)}
+footer{margin-top:54px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;color:#565d80;line-height:2}
+@media(max-width:640px){.reel{grid-template-columns:1fr;gap:10px}.reel .num{border:none;padding:0}.reel .go{display:none}}
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div class="eyebrow">Animation technique demos · for Mustafa</div>
+    <h1>Five reels, five ways <em>to move.</em></h1>
+    <p>Each reel is a ~30-second piece built with a different technique from the toolbox, all themed around <strong>Human Wisdom for the Age of AI</strong>. Click through in order, or jump to what interests you.</p>
+  </header>
+
+  <a class="reel" href="01-css-boxes.html">
+    <span class="num">REEL<b>01</b>≈00:31</span>
+    <span>
+      <span class="tech">HTML + CSS keyframes + JS</span>
+      <h2>The Delivery</h2>
+      <p>Packages ride a conveyor, open their flaps, and reveal the four capacities the course teaches. Pure CSS choreography on a 31-second timeline — plays live in the browser.</p>
+    </span>
+    <span class="go">→</span>
+  </a>
+
+  <a class="reel" href="02-p5-wisdom.html">
+    <span class="num">REEL<b>02</b>≈00:30</span>
+    <span>
+      <span class="tech">p5.js generative art</span>
+      <h2>Deliberate Currents</h2>
+      <p>A flow field with two castes: a fast swarm that reacts, and slow "sages" that integrate. Over thirty seconds the storm learns to breathe. Interactive — change the seed, tune the parameters, download a print.</p>
+    </span>
+    <span class="go">→</span>
+  </a>
+
+  <a class="reel" href="03-recording.html">
+    <span class="num">REEL<b>03</b>≈00:34</span>
+    <span>
+      <span class="tech">Pagecast recording → MP4 / GIF</span>
+      <h2>Page-to-Video Recording</h2>
+      <p>Reel 01 captured from a live browser and shipped as an MP4 and a GIF — the pipeline for dropping any animation into slides, email, or your Rise 360 course.</p>
+    </span>
+    <span class="go">→</span>
+  </a>
+
+  <a class="reel" href="04-slack.html">
+    <span class="num">REEL<b>04</b>≈00:03</span>
+    <span>
+      <span class="tech">Python / PIL → Slack-validated GIF</span>
+      <h2>The Unboxing, for Slack</h2>
+      <p>A message-size GIF and a 49 KB emoji variant, drawn frame by frame and validated against Slack's specs. Short by design — Slack loops want three seconds, not thirty.</p>
+    </span>
+    <span class="go">→</span>
+  </a>
+
+  <a class="reel" href="05-automation.html">
+    <span class="num">REEL<b>05</b>≈00:28</span>
+    <span>
+      <span class="tech">Browser automation + screen capture</span>
+      <h2>An Agent Works the Station</h2>
+      <p>An automation script types, selects, and clicks its way through a live form while the screen records — plus the interactive page itself, so you can work the station by hand.</p>
+    </span>
+    <span class="go">→</span>
+  </a>
+
+  <footer>
+    BUILT 2026-07-11 · CLAUDE × MUSTAFA<br>
+    REELS 01–02 ANIMATE LIVE IN THE BROWSER; 03–05 ARE RECORDED OR RENDERED MEDIA.
+  </footer>
+</div>
+</body>
+</html>

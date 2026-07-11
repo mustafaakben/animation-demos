@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reel 05 · The Packing Station — interactive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Karla:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#232946; --deep:#151a30; --chalk:#f4f4f0; --amber:#eebb4d;
+  --kraft:#c98f4e; --kraft-dark:#a9713a; --verdigris:#7ebdb4;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  min-height:100vh;
+  background:radial-gradient(120% 90% at 50% 0%, #2d3559 0%, var(--ink) 45%, var(--deep) 100%);
+  color:var(--chalk);font-family:'Karla',sans-serif;overflow:hidden;
+}
+.wrap{display:grid;grid-template-columns:380px 1fr;gap:28px;padding:28px;height:100vh}
+
+/* ---------- form panel ---------- */
+.panel{
+  background:rgba(21,26,48,.75);border:1px solid #343d63;border-radius:14px;
+  padding:26px;display:flex;flex-direction:column;gap:18px;
+}
+.panel .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.26em;color:var(--amber)}
+.panel h1{font-family:'Fraunces',serif;font-weight:600;font-size:30px;line-height:1.1}
+.panel p.lead{color:#b9bdd0;font-size:14px;line-height:1.5}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:7px;color:#d8dae6}
+.field input,.field select{
+  width:100%;padding:12px 14px;border-radius:8px;border:1px solid #3c4468;
+  background:#0e1226;color:var(--chalk);font-family:'Karla',sans-serif;font-size:15px;
+}
+.field input:focus,.field select:focus{outline:2px solid var(--amber);outline-offset:1px;border-color:var(--amber)}
+#pack{
+  margin-top:4px;padding:14px;border:none;border-radius:999px;cursor:pointer;
+  background:var(--amber);color:var(--ink);font-family:'IBM Plex Mono',monospace;
+  font-size:14px;letter-spacing:.14em;font-weight:500;transition:.15s;
+}
+#pack:hover{background:#f6cc6d}
+#pack:active{transform:scale(.96)}
+#pack:focus-visible{outline:3px solid var(--chalk);outline-offset:3px}
+#pack:disabled{opacity:.45;cursor:wait}
+
+.log{
+  margin-top:auto;background:#0a0d1c;border:1px solid #2b3357;border-radius:10px;
+  padding:14px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.7;
+  color:#8a90ad;height:170px;overflow:hidden;
+}
+.log .line{white-space:nowrap}
+.log .line .ok{color:var(--verdigris)}
+.log .line .hl{color:var(--amber)}
+
+/* ---------- stage ---------- */
+.stage{position:relative;border-radius:14px;overflow:hidden;border:1px solid #343d63;background:rgba(10,13,28,.35)}
+.counter{
+  position:absolute;top:20px;right:24px;font-family:'IBM Plex Mono',monospace;
+  font-size:13px;letter-spacing:.14em;color:#8a90ad;z-index:5;
+}
+.counter b{color:var(--amber);font-weight:500}
+.beltline{
+  position:absolute;left:0;right:0;bottom:20%;height:14px;background:#0e1226;
+  border-top:2px solid #343d63;border-bottom:2px solid #0a0d1c;
+}
+.beltline .belt{position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,#1c2340 0 30px,#0e1226 30px 60px);
+  animation:belt 1.1s linear infinite}
+@keyframes belt{to{transform:translateX(-60px)}}
+
+.parcel{
+  position:absolute;left:50%;bottom:calc(20% + 14px);width:200px;height:150px;margin-left:-100px;
+  animation:drop .55s cubic-bezier(.3,1.4,.5,1) forwards,
+            ship 1.2s cubic-bezier(.55,-.1,.8,.4) 2.6s forwards;
+}
+@keyframes drop{from{transform:translateY(-56vh) scale(.9);opacity:0}to{transform:none;opacity:1}}
+@keyframes ship{to{transform:translateX(-58vw)}}
+.parcel .pbody{
+  position:absolute;inset:0;border-radius:6px;
+  background:linear-gradient(160deg,var(--kraft),var(--kraft-dark));
+  box-shadow:0 18px 30px rgba(0,0,0,.45), inset 0 -12px 20px rgba(0,0,0,.18);
+}
+.parcel .pbody::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:24px;margin-left:-12px;background:rgba(244,244,240,.28)}
+.parcel .sticker{
+  position:absolute;left:14px;top:16px;right:14px;background:var(--chalk);color:var(--ink);
+  border-radius:6px;padding:10px 12px;transform:rotate(-2deg);
+  opacity:0;animation:stick .4s ease .8s forwards;
+}
+@keyframes stick{from{opacity:0;transform:rotate(-2deg) translateY(-8px)}to{opacity:1;transform:rotate(-2deg)}}
+.sticker .to{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.16em;color:#777d9c}
+.sticker .name{font-family:'Fraunces',serif;font-weight:600;font-size:16px;margin:2px 0}
+.sticker .cap{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;
+  background:var(--ink);color:var(--amber);border-radius:4px;padding:3px 7px;margin-top:2px}
+.stamp{
+  position:absolute;right:16px;bottom:14px;font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:.12em;color:rgba(21,26,48,.7);border:2px solid rgba(21,26,48,.55);
+  border-radius:4px;padding:4px 8px;transform:rotate(6deg);
+  opacity:0;animation:stamp .3s ease 2s forwards;
+}
+@keyframes stamp{from{opacity:0;transform:rotate(6deg) scale(2)}to{opacity:1;transform:rotate(6deg) scale(1)}}
+
+.hint{
+  position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);text-align:center;color:#6d7392;
+  font-size:15px;line-height:1.6;max-width:34ch;
+}
+.hint .big{font-family:'Fraunces',serif;font-size:26px;color:#9ba1c0;display:block;margin-bottom:6px}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms !important;animation-delay:0s !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="panel">
+    <div class="eyebrow">Reel 05 · Live Automation</div>
+    <h1>The Packing Station</h1>
+    <p class="lead">Fill the label, choose a capacity, and ship it. In this demo, a browser-automation agent operates the form — watch it type, select, and click.</p>
+
+    <div class="field">
+      <label for="ship-to">Ship to</label>
+      <input id="ship-to" type="text" placeholder="e.g. Class of 2026" autocomplete="off">
+    </div>
+
+    <div class="field">
+      <label for="capacity">Capacity to send</label>
+      <select id="capacity">
+        <option value="">Choose…</option>
+        <option value="Judgment">Judgment</option>
+        <option value="Empathy">Empathy</option>
+        <option value="Ethical Reasoning">Ethical Reasoning</option>
+        <option value="Curiosity">Curiosity</option>
+      </select>
+    </div>
+
+    <button id="pack" onclick="packAndShip()">▸ PACK &amp; SHIP</button>
+
+    <div class="log" id="log" aria-live="polite">
+      <div class="line">— shipping log —</div>
+    </div>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="counter">SHIPPED <b id="count">0</b> / 4</div>
+    <div class="hint" id="hint">
+      <span class="big">The belt is waiting.</span>
+      Nothing ships until someone decides what matters — that part is still a human job.
+    </div>
+    <div class="beltline"><div class="belt"></div></div>
+  </div>
+</div>
+
+<script>
+let shipped = 0;
+
+function logLine(html){
+  const log = document.getElementById('log');
+  const div = document.createElement('div');
+  div.className = 'line';
+  div.innerHTML = html;
+  log.appendChild(div);
+  while (log.children.length > 8) log.removeChild(log.children[1]);
+}
+
+function packAndShip(){
+  const nameEl = document.getElementById('ship-to');
+  const capEl  = document.getElementById('capacity');
+  const name = nameEl.value.trim();
+  const cap  = capEl.value;
+  if(!name || !cap){
+    logLine('<span class="hl">! label incomplete — need a name and a capacity</span>');
+    return;
+  }
+  const btn = document.getElementById('pack');
+  btn.disabled = true;
+  document.getElementById('hint').style.display = 'none';
+
+  const parcel = document.createElement('div');
+  parcel.className = 'parcel';
+  parcel.innerHTML =
+    '<div class="pbody">' +
+      '<div class="sticker"><div class="to">SHIP TO</div>' +
+      '<div class="name"></div>' +
+      '<div class="cap"></div></div>' +
+      '<div class="stamp">PACKED · HW-AI</div>' +
+    '</div>';
+  parcel.querySelector('.name').textContent = name;
+  parcel.querySelector('.cap').textContent = cap.toUpperCase();
+  document.getElementById('stage').appendChild(parcel);
+
+  logLine('&gt; packing <span class="hl">' + cap + '</span> for <span class="hl">' + name + '</span>…');
+
+  setTimeout(() => {
+    shipped++;
+    document.getElementById('count').textContent = shipped;
+    logLine('<span class="ok">✓ shipped #' + String(shipped).padStart(3,'0') + '</span>');
+    parcel.remove();
+    nameEl.value = '';
+    capEl.value = '';
+    btn.disabled = false;
+  }, 3900);
+}
+</script>
+</body>
+</html>

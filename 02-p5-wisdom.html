@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deliberate Currents — Generative Art Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Anthropic Brand Colors */
+        :root {
+            --anthropic-dark: #141413;
+            --anthropic-light: #faf9f5;
+            --anthropic-mid-gray: #b0aea5;
+            --anthropic-light-gray: #e8e6dc;
+            --anthropic-orange: #d97757;
+            --anthropic-blue: #6a9bcc;
+            --anthropic-green: #788c5d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--anthropic-light) 0%, #f5f3ee 100%);
+            min-height: 100vh;
+            color: var(--anthropic-dark);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(20, 20, 19, 0.1);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar h1 {
+            font-family: 'Lora', serif;
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--anthropic-dark);
+            margin-bottom: 8px;
+        }
+
+        .sidebar .subtitle {
+            color: var(--anthropic-mid-gray);
+            font-size: 14px;
+            margin-bottom: 32px;
+            line-height: 1.4;
+        }
+
+        /* Control Sections */
+        .control-section {
+            margin-bottom: 32px;
+        }
+
+        .control-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--anthropic-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-section h3::before {
+            content: '•';
+            color: var(--anthropic-orange);
+            font-weight: bold;
+        }
+
+        /* Seed Controls */
+        .seed-input {
+            width: 100%;
+            background: var(--anthropic-light);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-bottom: 12px;
+            border: 1px solid var(--anthropic-light-gray);
+            text-align: center;
+        }
+
+        .seed-input:focus {
+            outline: none;
+            border-color: var(--anthropic-orange);
+            box-shadow: 0 0 0 2px rgba(217, 119, 87, 0.1);
+            background: white;
+        }
+
+        .seed-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .regen-button {
+            margin-bottom: 0;
+        }
+
+        /* Parameter Controls */
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--anthropic-dark);
+            margin-bottom: 8px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+            height: 4px;
+            background: var(--anthropic-light-gray);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--anthropic-orange);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .slider-container input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            background: #c86641;
+        }
+
+        .slider-container input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: var(--anthropic-orange);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .value-display {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--anthropic-mid-gray);
+            min-width: 60px;
+            text-align: right;
+        }
+
+        /* Color Pickers */
+        .color-group {
+            margin-bottom: 16px;
+        }
+
+        .color-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--anthropic-mid-gray);
+            margin-bottom: 4px;
+        }
+
+        .color-picker-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .color-picker-container input[type="color"] {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: none;
+            padding: 0;
+        }
+
+        .color-value {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--anthropic-mid-gray);
+        }
+
+        /* Buttons */
+        .button {
+            background: var(--anthropic-orange);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .button:hover {
+            background: #c86641;
+            transform: translateY(-1px);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button.secondary {
+            background: var(--anthropic-blue);
+        }
+
+        .button.secondary:hover {
+            background: #5a8bb8;
+        }
+
+        .button.tertiary {
+            background: var(--anthropic-green);
+        }
+
+        .button.tertiary:hover {
+            background: #6b7b52;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .button-row .button {
+            flex: 1;
+        }
+
+        /* Canvas Area */
+        .canvas-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        #canvas-container {
+            width: 100%;
+            max-width: 1000px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(20, 20, 19, 0.1);
+            background: white;
+        }
+
+        #canvas-container canvas {
+            display: block;
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--anthropic-mid-gray);
+        }
+
+        /* Responsive - Stack on mobile */
+        @media (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .canvas-area {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Control Sidebar -->
+        <div class="sidebar">
+            <h1>Deliberate Currents</h1>
+            <div class="subtitle">Two speeds of mind in one field. A storm learns to breathe over ~30 seconds — the swarm reacts, the sages integrate. From <em>Human Wisdom for the Age of AI</em>.</div>
+
+            <!-- Seed Section (ALWAYS KEEP THIS) -->
+            <div class="control-section">
+                <h3>Seed</h3>
+                <input type="number" id="seed-input" class="seed-input" value="12345" onchange="updateSeed()">
+                <div class="seed-controls">
+                    <button class="button secondary" onclick="previousSeed()">← Prev</button>
+                    <button class="button secondary" onclick="nextSeed()">Next →</button>
+                </div>
+                <button class="button tertiary regen-button" onclick="randomSeedAndUpdate()">↻ Random</button>
+            </div>
+
+            <!-- Parameters Section -->
+            <div class="control-section">
+                <h3>Parameters</h3>
+
+                <div class="control-group">
+                    <label>Swarm (fast readers)</label>
+                    <div class="slider-container">
+                        <input type="range" id="swarmCount" min="500" max="6000" step="250" value="2500" oninput="updateParam('swarmCount', this.value)">
+                        <span class="value-display" id="swarmCount-value">2500</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Sages (slow integrators)</label>
+                    <div class="slider-container">
+                        <input type="range" id="sageCount" min="4" max="60" step="2" value="24" oninput="updateParam('sageCount', this.value)">
+                        <span class="value-display" id="sageCount-value">24</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Field Grain (noise scale)</label>
+                    <div class="slider-container">
+                        <input type="range" id="noiseScale" min="0.001" max="0.012" step="0.001" value="0.004" oninput="updateParam('noiseScale', this.value)">
+                        <span class="value-display" id="noiseScale-value">0.004</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Calming Arc (seconds)</label>
+                    <div class="slider-container">
+                        <input type="range" id="calmSeconds" min="10" max="60" step="5" value="30" oninput="updateParam('calmSeconds', this.value)">
+                        <span class="value-display" id="calmSeconds-value">30</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Trail Persistence</label>
+                    <div class="slider-container">
+                        <input type="range" id="trailFade" min="2" max="30" step="1" value="5" oninput="updateParam('trailFade', this.value)">
+                        <span class="value-display" id="trailFade-value">5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colors Section -->
+            <div class="control-section">
+                <h3>Colors</h3>
+
+                <div class="color-group">
+                    <label>Swarm — fast (heat)</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color1" value="#d97757" onchange="updateColor(0, this.value)">
+                        <span class="color-value" id="color1-value">#d97757</span>
+                    </div>
+                </div>
+
+                <div class="color-group">
+                    <label>Swarm — slowing (cool)</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color2" value="#6a9bcc" onchange="updateColor(1, this.value)">
+                        <span class="color-value" id="color2-value">#6a9bcc</span>
+                    </div>
+                </div>
+
+                <div class="color-group">
+                    <label>Sage ink</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="color3" value="#232946" onchange="updateColor(2, this.value)">
+                        <span class="color-value" id="color3-value">#232946</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Section (ALWAYS KEEP THIS) -->
+            <div class="control-section">
+                <h3>Actions</h3>
+                <div class="button-row" style="margin-bottom:8px;">
+                    <button class="button" onclick="regenerate()">↻ Restart Arc</button>
+                    <button class="button" onclick="resetParameters()">Reset</button>
+                </div>
+                <button class="button secondary" onclick="downloadPNG()">↓ Download PNG</button>
+            </div>
+        </div>
+
+        <!-- Main Canvas Area -->
+        <div class="canvas-area">
+            <div id="canvas-container">
+                <div class="loading">Initializing generative art...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════════
+        // DELIBERATE CURRENTS — parameters
+        // ═══════════════════════════════════════════════════════════════════
+
+        let params = {
+            seed: 12345,
+            swarmCount: 2500,
+            sageCount: 24,
+            noiseScale: 0.004,
+            calmSeconds: 30,
+            trailFade: 5,
+            colorPalette: ['#d97757', '#6a9bcc', '#232946']
+        };
+
+        let defaultParams = JSON.parse(JSON.stringify(params));
+
+        // ═══════════════════════════════════════════════════════════════════
+        // ALGORITHM — one field, two castes, a thirty-second annealing
+        // ═══════════════════════════════════════════════════════════════════
+
+        let swarm = [];
+        let sages = [];
+        let startFrame = 0;
+        let cWarm, cCool, cInk;   // cached p5 colors
+
+        function setup() {
+            let canvas = createCanvas(1200, 1200);
+            canvas.parent('canvas-container');
+            pixelDensity(1);
+            frameRate(60);
+            initializeSystem();
+            document.querySelector('.loading').style.display = 'none';
+        }
+
+        function initializeSystem() {
+            randomSeed(params.seed);
+            noiseSeed(params.seed);
+            noiseDetail(3, 0.55);
+
+            cWarm = color(params.colorPalette[0]);
+            cCool = color(params.colorPalette[1]);
+            cInk  = color(params.colorPalette[2]);
+
+            swarm = [];
+            for (let i = 0; i < params.swarmCount; i++) swarm.push(new Swift());
+            sages = [];
+            for (let i = 0; i < params.sageCount; i++) sages.push(new Sage());
+
+            startFrame = frameCount;
+            background(250, 249, 245);
+        }
+
+        // Elapsed seconds since this arc began
+        function elapsed() { return (frameCount - startFrame) / 60; }
+
+        // Turbulence anneals 1 → 0.22 over calmSeconds, then breathes gently
+        function turbulence() {
+            let t = elapsed() / params.calmSeconds;
+            if (t >= 1) return 0.22 + 0.03 * sin(elapsed() * 0.5);
+            let e = t < 0.5 ? 4 * t * t * t : 1 - pow(-2 * t + 2, 3) / 2; // easeInOutCubic
+            return lerp(1.0, 0.22, e);
+        }
+
+        // The one field everyone lives in
+        function fieldAngle(x, y, turb) {
+            let n = noise(x * params.noiseScale, y * params.noiseScale, elapsed() * 0.055);
+            return (n - 0.5) * TWO_PI * (1.6 + 3.4 * turb);
+        }
+
+        function draw() {
+            // sediment: translucent veil instead of a clear
+            noStroke();
+            fill(250, 249, 245, params.trailFade);
+            rect(0, 0, width, height);
+
+            let turb = turbulence();
+            for (let p of swarm) p.step(turb);
+            for (let s of sages) s.step(turb);
+        }
+
+        // ─── The swarm: reads the field at a point, obeys instantly ───
+        class Swift {
+            constructor() {
+                this.pos = createVector(random(width), random(height));
+                this.prev = this.pos.copy();
+                this.jitter = random(0.85, 1.15);
+            }
+            step(turb) {
+                let a = fieldAngle(this.pos.x, this.pos.y, turb);
+                let speed = (1.1 + 2.9 * turb) * this.jitter;
+                this.prev.set(this.pos);
+                this.pos.x += cos(a) * speed;
+                this.pos.y += sin(a) * speed;
+                this.wrap();
+                // heat = haste: fast burns warm, calm cools
+                let heat = constrain((speed - 1.1) / 2.9, 0, 1);
+                let c = lerpColor(cCool, cWarm, heat);
+                stroke(red(c), green(c), blue(c), 36);
+                strokeWeight(1);
+                line(this.prev.x, this.prev.y, this.pos.x, this.pos.y);
+            }
+            wrap() {
+                let w = false;
+                if (this.pos.x < 0) { this.pos.x += width;  w = true; }
+                if (this.pos.x >= width) { this.pos.x -= width; w = true; }
+                if (this.pos.y < 0) { this.pos.y += height; w = true; }
+                if (this.pos.y >= height) { this.pos.y -= height; w = true; }
+                if (w) this.prev.set(this.pos);
+            }
+        }
+
+        // ─── The sages: sample widely, average, turn slowly, commit in ink ───
+        class Sage {
+            constructor() {
+                this.pos = createVector(random(width * 0.15, width * 0.85),
+                                        random(height * 0.15, height * 0.85));
+                this.prev = this.pos.copy();
+                this.heading = random(TWO_PI);
+                this.radius = random(60, 110);   // how widely this sage reads the room
+            }
+            step(turb) {
+                // integrate six readings around the self — deliberation, not reaction
+                let vx = 0, vy = 0;
+                for (let k = 0; k < 6; k++) {
+                    let phi = (k / 6) * TWO_PI;
+                    let sx = this.pos.x + cos(phi) * this.radius;
+                    let sy = this.pos.y + sin(phi) * this.radius;
+                    let a = fieldAngle(sx, sy, turb);
+                    vx += cos(a); vy += sin(a);
+                }
+                let target = atan2(vy, vx);
+                // turning inertia: conviction changes slowly, more willingly in calm
+                let ease = 0.028 + 0.05 * (1 - turb);
+                let d = atan2(sin(target - this.heading), cos(target - this.heading));
+                this.heading += d * ease;
+
+                let speed = 0.58;
+                this.prev.set(this.pos);
+                this.pos.x += cos(this.heading) * speed;
+                this.pos.y += sin(this.heading) * speed;
+                this.wrap();
+
+                stroke(red(cInk), green(cInk), blue(cInk), 68);
+                strokeWeight(2.6);
+                line(this.prev.x, this.prev.y, this.pos.x, this.pos.y);
+            }
+            wrap() {
+                let w = false;
+                if (this.pos.x < -20) { this.pos.x = width + 19; w = true; }
+                if (this.pos.x > width + 20) { this.pos.x = -19; w = true; }
+                if (this.pos.y < -20) { this.pos.y = height + 19; w = true; }
+                if (this.pos.y > height + 20) { this.pos.y = -19; w = true; }
+                if (w) this.prev.set(this.pos);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // UI CONTROL HANDLERS
+        // ═══════════════════════════════════════════════════════════════════
+
+        function updateParam(paramName, value) {
+            params[paramName] = parseFloat(value);
+            document.getElementById(paramName + '-value').textContent = value;
+            // Census changes need a fresh population; the rest apply live
+            if (paramName === 'swarmCount' || paramName === 'sageCount') {
+                initializeSystem();
+            }
+        }
+
+        function updateColor(idx, value) {
+            params.colorPalette[idx] = value;
+            document.getElementById('color' + (idx + 1) + '-value').textContent = value;
+            cWarm = color(params.colorPalette[0]);
+            cCool = color(params.colorPalette[1]);
+            cInk  = color(params.colorPalette[2]);
+        }
+
+        function regenerate() { initializeSystem(); }
+
+        function downloadPNG() {
+            saveCanvas('deliberate-currents-seed-' + params.seed, 'png');
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        // SEED CONTROL FUNCTIONS - ALWAYS KEEP THESE
+        // ═══════════════════════════════════════════════════════════════════
+
+        function updateSeedDisplay() {
+            document.getElementById('seed-input').value = params.seed;
+        }
+
+        function updateSeed() {
+            let input = document.getElementById('seed-input');
+            let newSeed = parseInt(input.value);
+            if (newSeed && newSeed > 0) {
+                params.seed = newSeed;
+                initializeSystem();
+            } else {
+                updateSeedDisplay();
+            }
+        }
+
+        function previousSeed() {
+            params.seed = Math.max(1, params.seed - 1);
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function nextSeed() {
+            params.seed = params.seed + 1;
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function randomSeedAndUpdate() {
+            params.seed = Math.floor(Math.random() * 999999) + 1;
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        function resetParameters() {
+            params = JSON.parse(JSON.stringify(defaultParams));
+
+            for (const key of ['swarmCount', 'sageCount', 'noiseScale', 'calmSeconds', 'trailFade']) {
+                document.getElementById(key).value = params[key];
+                document.getElementById(key + '-value').textContent = params[key];
+            }
+            for (let i = 0; i < 3; i++) {
+                document.getElementById('color' + (i + 1)).value = params.colorPalette[i];
+                document.getElementById('color' + (i + 1) + '-value').textContent = params.colorPalette[i];
+            }
+            cWarm = color(params.colorPalette[0]);
+            cCool = color(params.colorPalette[1]);
+            cInk  = color(params.colorPalette[2]);
+
+            updateSeedDisplay();
+            initializeSystem();
+        }
+
+        window.addEventListener('load', function() {
+            updateSeedDisplay();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reel 01 · The Delivery — CSS/JS animation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Karla:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#232946;        /* indigo night */
+  --deep:#151a30;       /* deeper stage floor */
+  --chalk:#f4f4f0;      /* chalk white */
+  --amber:#eebb4d;      /* lamplight */
+  --kraft:#c98f4e;      /* cardboard */
+  --kraft-dark:#a9713a; /* cardboard shadow */
+  --verdigris:#7ebdb4;  /* cool accent */
+  /* act start times */
+  --t1:3s; --t2:9s; --t3:15s; --t4:21s; --tEnd:27s;
+  --act:6s;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:radial-gradient(120% 90% at 50% 10%, #2d3559 0%, var(--ink) 45%, var(--deep) 100%);
+  color:var(--chalk);
+  font-family:'Karla',sans-serif;
+  overflow:hidden;
+}
+.stage{position:relative;width:100%;height:100vh}
+
+/* ---------- title act ---------- */
+.title{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:14px;opacity:0;
+  animation:titleIn 1.2s ease .3s forwards, titleOut .9s ease 2.4s forwards;
+}
+.title .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.28em;color:var(--amber);text-transform:uppercase}
+.title h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(40px,7vw,84px);line-height:1.02}
+.title p{font-size:17px;color:#b9bdd0;max-width:46ch}
+@keyframes titleIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes titleOut{to{opacity:0;transform:translateY(-26px)}}
+
+/* ---------- shelf of collected capacities ---------- */
+.shelf{
+  position:absolute;top:34px;left:50%;transform:translateX(-50%);
+  display:flex;gap:14px;opacity:0;animation:fadeIn .8s ease 3.2s forwards;
+}
+.chip{
+  font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;
+  padding:9px 16px;border:1px solid #3c4468;border-radius:999px;color:#7b81a0;
+  background:rgba(21,26,48,.6);transition:.4s;
+}
+.chip::before{content:'○ '}
+.chip.lit{ /* lit by its own delayed animation */
+  animation:chipLight .6s ease forwards;
+}
+.chip:nth-child(1).lit{animation-delay:calc(var(--t1) + 3.4s)}
+.chip:nth-child(2).lit{animation-delay:calc(var(--t2) + 3.4s)}
+.chip:nth-child(3).lit{animation-delay:calc(var(--t3) + 3.4s)}
+.chip:nth-child(4).lit{animation-delay:calc(var(--t4) + 3.4s)}
+@keyframes chipLight{to{color:var(--ink);background:var(--amber);border-color:var(--amber);font-weight:500}}
+@keyframes fadeIn{to{opacity:1}}
+
+/* ---------- lamplight ---------- */
+.lamp{
+  position:absolute;left:50%;top:0;width:640px;height:78vh;transform:translateX(-50%);
+  background:radial-gradient(50% 62% at 50% 30%, rgba(238,187,77,.14) 0%, transparent 70%);
+  opacity:0;animation:fadeIn 1.4s ease 3s forwards;pointer-events:none;
+}
+
+/* ---------- conveyor ---------- */
+.conveyor{
+  position:absolute;left:0;right:0;bottom:16vh;height:16px;
+  background:#0e1226;border-top:2px solid #343d63;border-bottom:2px solid #0a0d1c;
+  opacity:0;animation:fadeIn .8s ease 2.8s forwards;
+}
+.conveyor .belt{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,#1c2340 0 34px,#0e1226 34px 68px);
+  animation:belt 1.1s linear infinite;
+}
+@keyframes belt{to{transform:translateX(-68px)}}
+.conveyor .leg{position:absolute;top:16px;width:10px;height:16vh;background:#0a0d1c}
+.leg.l1{left:12%}.leg.l2{left:38%}.leg.l3{left:62%}.leg.l4{left:88%}
+
+/* ---------- acts: box arrives, opens, card rises ---------- */
+.act{
+  position:absolute;left:50%;bottom:calc(16vh + 16px);
+  transform:translateX(-50%);
+  width:220px;height:400px;
+  opacity:0;
+  animation:actOn .01s linear var(--d) forwards, actOff .01s linear calc(var(--d) + var(--act)) forwards;
+}
+.act1{--d:var(--t1)} .act2{--d:var(--t2)} .act3{--d:var(--t3)} .act4{--d:var(--t4)}
+@keyframes actOn{to{opacity:1}}
+@keyframes actOff{to{opacity:0;visibility:hidden}}
+
+.box{
+  position:absolute;bottom:0;left:50%;width:180px;height:140px;margin-left:-90px;
+  transform:translateX(60vw);
+  animation:slideIn 1.3s cubic-bezier(.2,.8,.25,1) var(--d) forwards,
+            slideOut 1s cubic-bezier(.6,-0.1,.9,.4) calc(var(--d) + 4.9s) forwards;
+}
+@keyframes slideIn{to{transform:translateX(0)}}
+@keyframes slideOut{to{transform:translateX(-70vw)}}
+.box .body{
+  position:absolute;inset:0;border-radius:6px;
+  background:linear-gradient(160deg,var(--kraft) 0%,var(--kraft-dark) 100%);
+  box-shadow:0 18px 30px rgba(0,0,0,.45), inset 0 -14px 22px rgba(0,0,0,.18);
+}
+.box .body::before{ /* packing tape */
+  content:'';position:absolute;left:50%;top:0;bottom:0;width:26px;margin-left:-13px;
+  background:rgba(244,244,240,.28);
+}
+.box .label{
+  position:absolute;left:14px;bottom:14px;font-family:'IBM Plex Mono',monospace;
+  font-size:10px;letter-spacing:.14em;color:rgba(21,26,48,.75);
+}
+.flap{
+  position:absolute;top:0;width:90px;height:52px;
+  background:linear-gradient(180deg,#d8a35f,var(--kraft));
+  transform-origin:bottom center;z-index:3;
+  box-shadow:inset 0 2px 4px rgba(255,255,255,.25);
+}
+.flap.left{left:0;border-radius:6px 0 0 0;transform-origin:0 100%;
+  animation:flapL .8s cubic-bezier(.34,1.4,.6,1) calc(var(--d) + 1.6s) forwards}
+.flap.right{right:0;border-radius:0 6px 0 0;transform-origin:100% 100%;
+  animation:flapR .8s cubic-bezier(.34,1.4,.6,1) calc(var(--d) + 1.6s) forwards}
+@keyframes flapL{to{transform:rotate(-118deg)}}
+@keyframes flapR{to{transform:rotate(118deg)}}
+
+.card{
+  position:absolute;left:50%;bottom:96px;width:210px;margin-left:-105px;
+  background:var(--chalk);color:var(--ink);border-radius:10px;padding:20px 18px 16px;
+  text-align:center;z-index:2;opacity:0;transform:translateY(70px) scale(.55);
+  box-shadow:0 20px 40px rgba(0,0,0,.5);
+  animation:cardRise 1s cubic-bezier(.2,1.2,.4,1) calc(var(--d) + 2.5s) forwards,
+            cardAway .8s ease-in calc(var(--d) + 4.6s) forwards;
+}
+.card .no{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--kraft-dark)}
+.card h2{font-family:'Fraunces',serif;font-size:27px;font-weight:600;margin:6px 0 8px}
+.card p{font-size:13px;line-height:1.45;color:#4a4f6b}
+@keyframes cardRise{to{opacity:1;transform:translateY(-130px) scale(1)}}
+@keyframes cardAway{from{opacity:1;transform:translateY(-130px) scale(1)}
+  to{opacity:0;transform:translateY(-320px) scale(.35)}}
+
+/* ---------- finale ---------- */
+.finale{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:16px;opacity:0;pointer-events:none;
+  animation:fadeIn 1.2s ease var(--tEnd) forwards;
+}
+.finale h2{font-family:'Fraunces',serif;font-size:clamp(30px,5vw,58px);font-weight:600;max-width:22ch;line-height:1.15}
+.finale h2 em{font-style:italic;color:var(--amber)}
+.finale p{color:#b9bdd0;font-size:16px}
+.finale .replay{
+  pointer-events:auto;margin-top:10px;font-family:'IBM Plex Mono',monospace;font-size:13px;
+  letter-spacing:.14em;color:var(--ink);background:var(--amber);border:none;border-radius:999px;
+  padding:12px 26px;cursor:pointer;
+}
+.finale .replay:hover{background:#f6cc6d}
+.finale .replay:focus-visible{outline:3px solid var(--chalk);outline-offset:3px}
+
+/* ---------- timecode rail (signature) ---------- */
+.rail{
+  position:absolute;left:0;right:0;bottom:0;height:52px;display:flex;align-items:center;
+  gap:16px;padding:0 22px;background:rgba(10,13,28,.85);border-top:1px solid #2b3357;
+  font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a90ad;z-index:10;
+}
+.rail .track{flex:1;height:3px;background:#2b3357;border-radius:2px;overflow:hidden}
+.rail .fill{height:100%;width:0;background:var(--amber);animation:railFill 31s linear .0s forwards}
+@keyframes railFill{to{width:100%}}
+.rail .tc{min-width:110px}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.01ms !important;animation-delay:0s !important}
+}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="lamp"></div>
+
+  <div class="title">
+    <div class="eyebrow">Reel 01 · CSS/JS Keyframes</div>
+    <h1>The Delivery</h1>
+    <p>Four packages are arriving. Every one holds something no model can ship.</p>
+  </div>
+
+  <div class="shelf" aria-label="Capacities collected">
+    <span class="chip lit">Judgment</span>
+    <span class="chip lit">Empathy</span>
+    <span class="chip lit">Ethical&nbsp;Reasoning</span>
+    <span class="chip lit">Curiosity</span>
+  </div>
+
+  <div class="act act1">
+    <div class="card"><div class="no">CAPACITY 1/4</div><h2>Judgment</h2>
+      <p>Knowing which answer matters when every answer is available.</p></div>
+    <div class="box"><div class="flap left"></div><div class="flap right"></div>
+      <div class="body"><span class="label">PKG-001 · HANDLE WITH CARE</span></div></div>
+  </div>
+
+  <div class="act act2">
+    <div class="card"><div class="no">CAPACITY 2/4</div><h2>Empathy</h2>
+      <p>Reading the person behind the prompt.</p></div>
+    <div class="box"><div class="flap left"></div><div class="flap right"></div>
+      <div class="body"><span class="label">PKG-002 · FRAGILE</span></div></div>
+  </div>
+
+  <div class="act act3">
+    <div class="card"><div class="no">CAPACITY 3/4</div><h2>Ethical Reasoning</h2>
+      <p>Deciding what should be done, not just what can be.</p></div>
+    <div class="box"><div class="flap left"></div><div class="flap right"></div>
+      <div class="body"><span class="label">PKG-003 · THIS SIDE UP</span></div></div>
+  </div>
+
+  <div class="act act4">
+    <div class="card"><div class="no">CAPACITY 4/4</div><h2>Curiosity</h2>
+      <p>Asking the question the dataset never contained.</p></div>
+    <div class="box"><div class="flap left"></div><div class="flap right"></div>
+      <div class="body"><span class="label">PKG-004 · OPEN FIRST</span></div></div>
+  </div>
+
+  <div class="conveyor">
+    <div class="belt"></div>
+    <div class="leg l1"></div><div class="leg l2"></div><div class="leg l3"></div><div class="leg l4"></div>
+  </div>
+
+  <div class="finale">
+    <h2>Wisdom doesn't ship in a box. <em>It's practiced.</em></h2>
+    <p>Human Wisdom for the Age of AI</p>
+    <button class="replay" onclick="location.reload()">↻ PLAY AGAIN</button>
+  </div>
+
+  <div class="rail">
+    <span>REEL 01</span>
+    <div class="track"><div class="fill"></div></div>
+    <span class="tc" id="tc">00:00 / 00:31</span>
+  </div>
+</div>
+<script>
+const t0 = performance.now();
+const tc = document.getElementById('tc');
+(function tick(){
+  const s = Math.min(31, (performance.now() - t0) / 1000);
+  tc.textContent = '00:' + String(Math.floor(s)).padStart(2,'0') + ' / 00:31';
+  if (s < 31) requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
