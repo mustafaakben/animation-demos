@@ -1,0 +1,3 @@
+tools/video/node_modules/
+tools/video/out/
+.playwright-mcp/
