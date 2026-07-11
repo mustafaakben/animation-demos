@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0e1226">
+<title>The Night Shift — a game about the last signature</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Karla:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#232946; --deep:#0e1226; --chalk:#f4f4f0; --amber:#eebb4d;
+  --kraft:#c98f4e; --verdigris:#7ebdb4; --alarm:#c25048; --paper:#f2efe6;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overscroll-behavior:none}
+body{
+  background:var(--deep); color:var(--chalk); font-family:'Karla',sans-serif;
+  overflow:hidden; -webkit-user-select:none; user-select:none; touch-action:manipulation;
+}
+#scene{position:fixed;inset:0}
+#scene canvas{display:block}
+
+/* ---------- HUD ---------- */
+#hud{
+  position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:14px;
+  padding:calc(10px + env(safe-area-inset-top)) 16px 10px;
+  background:linear-gradient(180deg,rgba(10,13,28,.92),rgba(10,13,28,0));
+  font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#9ba1c0;
+  pointer-events:none;
+}
+#hud .grow{flex:1}
+#hud b{color:var(--amber);font-weight:500}
+#queueDots{display:flex;gap:5px;align-items:center}
+#queueDots i{width:9px;height:9px;border-radius:50%;background:#2b3357;display:block}
+#queueDots i.on{background:var(--kraft)}
+#queueDots i.hot{background:var(--alarm)}
+.hudbtn{
+  pointer-events:auto;background:rgba(21,26,48,.8);border:1px solid #343d63;color:#9ba1c0;
+  border-radius:8px;padding:7px 11px;font-family:inherit;font-size:12px;cursor:pointer;
+}
+.hudbtn:hover{border-color:var(--amber);color:var(--chalk)}
+.hudbtn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+@media (max-width:480px){
+  #hud{gap:8px;padding:calc(8px + env(safe-area-inset-top)) 10px 8px;font-size:10.5px}
+  .hudbtn{padding:6px 9px;font-size:11px}
+  #queueDots i{width:7px;height:7px}
+}
+
+/* ---------- action buttons ---------- */
+#inspectBtn{
+  position:fixed;left:50%;transform:translateX(-50%);z-index:20;
+  bottom:calc(26px + env(safe-area-inset-bottom));
+  background:var(--amber);color:var(--ink);border:none;border-radius:999px;
+  padding:16px 34px;font-family:'IBM Plex Mono',monospace;font-size:14px;letter-spacing:.14em;
+  font-weight:500;cursor:pointer;box-shadow:0 12px 34px rgba(238,187,77,.25);display:none;
+}
+#inspectBtn:hover{background:#f6cc6d}
+#inspectBtn:focus-visible{outline:3px solid var(--chalk);outline-offset:3px}
+#letterBtn{
+  position:fixed;right:18px;z-index:20;bottom:calc(26px + env(safe-area-inset-bottom));
+  background:var(--alarm);color:var(--chalk);border:none;border-radius:999px;
+  padding:14px 22px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;
+  cursor:pointer;display:none;animation:pulse 1.4s ease infinite;
+}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(194,80,72,.5)}55%{box-shadow:0 0 0 14px rgba(194,80,72,0)}}
+@media (prefers-reduced-motion: reduce){#letterBtn{animation:none}}
+
+/* ---------- toasts ---------- */
+#toasts{
+  position:fixed;top:calc(52px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);
+  z-index:30;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;
+  width:min(92vw,560px);
+}
+.toast{
+  background:rgba(10,13,28,.92);border:1px solid #343d63;border-left:3px solid var(--amber);
+  color:#d8dae6;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.06em;
+  padding:10px 14px;border-radius:8px;max-width:100%;text-align:center;
+  animation:toastIn .25s ease;
+}
+.toast.warn{border-left-color:var(--alarm)}
+@keyframes toastIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1}}
+
+/* ---------- sheets (overlays) ---------- */
+.sheet-backdrop{
+  position:fixed;inset:0;z-index:40;background:rgba(8,10,22,.66);
+  display:none;align-items:flex-end;justify-content:center;
+  backdrop-filter:blur(3px);
+}
+.sheet-backdrop.open{display:flex}
+@media (min-width:700px){.sheet-backdrop{align-items:center}}
+.sheet{
+  width:min(96vw,620px);max-height:88dvh;display:flex;flex-direction:column;
+  background:var(--paper);color:#232324;border-radius:16px 16px 0 0;overflow:hidden;
+  box-shadow:0 -20px 60px rgba(0,0,0,.6);
+}
+@media (min-width:700px){.sheet{border-radius:16px;max-height:86vh}}
+.sheet.dark{background:#141a33;color:var(--chalk)}
+
+.doc-head{
+  padding:16px 22px 12px;border-bottom:1px solid rgba(35,41,70,.18);
+  background:linear-gradient(180deg,#e9e4d5,var(--paper));
+}
+.sheet.dark .doc-head{background:none;border-bottom:1px solid #2b3357}
+.doc-kind{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.22em;color:#8d6a33}
+.sheet.dark .doc-kind{color:var(--amber)}
+.doc-title{font-family:'Fraunces',serif;font-weight:600;font-size:21px;margin-top:3px}
+.doc-to{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#6d6d75;margin-top:3px}
+.sheet.dark .doc-to{color:#9ba1c0}
+
+.tabs{display:flex;gap:0;border-bottom:1px solid rgba(35,41,70,.18)}
+.tab{
+  flex:1;padding:12px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.12em;
+  background:none;border:none;border-bottom:3px solid transparent;color:#8b8b90;cursor:pointer;
+}
+.tab.on{color:#232324;border-bottom-color:var(--amber);font-weight:500}
+.tab:focus-visible{outline:2px solid var(--amber);outline-offset:-2px}
+
+.doc-body{
+  padding:18px 22px;overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;
+  font-size:15px;line-height:1.62;white-space:pre-wrap;
+}
+.doc-body.mono{font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;background:#ece7d8}
+.sheet.dark .doc-body{font-size:15px}
+
+.doc-actions{
+  display:flex;gap:10px;padding:14px 18px calc(14px + env(safe-area-inset-bottom));
+  border-top:1px solid rgba(35,41,70,.18);background:#e9e4d5;
+}
+.sheet.dark .doc-actions{background:none;border-top:1px solid #2b3357}
+.stamp{
+  flex:1;border:none;border-radius:12px;padding:16px 8px;cursor:pointer;
+  font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;font-weight:500;
+}
+.stamp:focus-visible{outline:3px solid #232324;outline-offset:2px}
+.stamp.approve{background:var(--amber);color:var(--ink)}
+.stamp.approve:hover{background:#f6cc6d}
+.stamp.flag{background:var(--alarm);color:var(--chalk)}
+.stamp.flag:hover{background:#d4655d}
+.stamp.ghost{background:none;border:1.5px solid #a9a396;color:#6d6d75;flex:.7}
+.stamp.ghost:hover{border-color:#232324;color:#232324}
+.sheet.dark .stamp.ghost{border-color:#3c4468;color:#9ba1c0}
+.sheet.dark .stamp.ghost:hover{border-color:var(--chalk);color:var(--chalk)}
+.hintbar{
+  padding:9px 22px;background:#20263f;color:#b9bdd0;font-size:12.5px;
+  font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;
+}
+
+/* ---------- title & report ---------- */
+.big-sheet{align-items:center !important}
+#titleSheet .doc-body,#reportSheet .doc-body{white-space:normal}
+.t-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.3em;color:var(--amber)}
+.t-title{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(34px,8vw,52px);line-height:1.02;margin:10px 0 4px}
+.t-sub{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#9ba1c0;margin-bottom:18px}
+.t-fiction p{margin-bottom:12px;color:#d8dae6;font-size:15px;line-height:1.6}
+.t-fiction p b{color:var(--amber);font-weight:600}
+.bigbtn{
+  width:100%;margin-top:8px;background:var(--amber);color:var(--ink);border:none;border-radius:999px;
+  padding:17px;font-family:'IBM Plex Mono',monospace;font-size:14px;letter-spacing:.16em;font-weight:500;cursor:pointer;
+}
+.bigbtn:hover{background:#f6cc6d}
+.bigbtn.quiet{background:none;border:1.5px solid #3c4468;color:#9ba1c0;margin-top:10px}
+.bigbtn.quiet:hover{border-color:var(--chalk);color:var(--chalk)}
+
+.r-scores{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:6px 0 16px}
+.r-score{border:1px solid #2b3357;border-radius:12px;padding:14px;text-align:center}
+.r-score .lab{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:#9ba1c0}
+.r-score .val{font-family:'Fraunces',serif;font-size:34px;font-weight:600;margin-top:2px}
+.r-score.eff .val{color:#9ba1c0;text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:rgba(194,80,72,.7)}
+.r-score.out .val{color:var(--amber)}
+.r-rank{border:1px solid var(--amber);border-radius:12px;padding:16px;margin-bottom:16px}
+.r-rank .name{font-family:'IBM Plex Mono',monospace;letter-spacing:.2em;color:var(--amber);font-size:13px}
+.r-rank .text{margin-top:6px;color:#d8dae6;font-size:14.5px;line-height:1.55}
+.r-stat{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed #2b3357;font-size:13.5px}
+.r-stat b{color:var(--chalk)}
+.r-row{padding:10px 0;border-bottom:1px solid #232946}
+.r-row .top{display:flex;justify-content:space-between;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em}
+.r-row .verdict-ok{color:var(--verdigris)}
+.r-row .verdict-bad{color:var(--alarm)}
+.r-row .why{margin-top:4px;color:#b9bdd0;font-size:13px;line-height:1.5}
+.r-count{border-left:3px solid var(--alarm);background:#1b2140;padding:12px 14px;border-radius:8px;margin:14px 0;font-size:13.5px;line-height:1.6}
+.r-count .q{font-family:'IBM Plex Mono',monospace;color:#f0c9c5;display:block;margin-top:6px;font-size:12.5px}
+.r-close{margin:16px 0 4px;color:#b9bdd0;font-size:14px;line-height:1.65;font-style:italic}
+.r-course{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.22em;color:var(--amber);margin-top:8px}
+h4.r-h{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;color:#9ba1c0;margin:18px 0 8px;font-weight:400}
+.fclass{font-size:13px;color:#b9bdd0;padding:4px 0}
+.fclass b{color:var(--chalk)}
+a{color:var(--amber)}
+</style>
+</head>
+<body>
+<div id="scene" aria-hidden="true"></div>
+
+<div id="hud" aria-live="off">
+  <span>NIGHT&nbsp;SHIFT&nbsp;·&nbsp;<b id="clock">23:00</b></span>
+  <span class="grow"></span>
+  <span id="queueDots" title="Belt load"></span>
+  <span class="grow"></span>
+  <span>EFF&nbsp;<b id="eff">0</b><b id="mult"></b></span>
+  <button class="hudbtn" id="muteBtn" aria-label="Toggle sound">♪</button>
+  <button class="hudbtn" id="helpBtn" aria-label="Help">?</button>
+</div>
+
+<div id="toasts" aria-live="polite"></div>
+
+<button id="inspectBtn">▸ INSPECT PARCEL</button>
+<button id="letterBtn">✉ RED MAIL</button>
+
+<!-- Document sheet -->
+<div class="sheet-backdrop" id="docBack" role="dialog" aria-modal="true" aria-label="Document review">
+  <div class="sheet">
+    <div class="doc-head">
+      <div class="doc-kind" id="docKind"></div>
+      <div class="doc-title" id="docTitle"></div>
+      <div class="doc-to" id="docTo"></div>
+    </div>
+    <div class="hintbar" id="docHint" style="display:none">Cross-check the SOURCE FILE before stamping — or don’t. Speed pays.</div>
+    <div class="tabs">
+      <button class="tab on" id="tabDraft">M-6 DRAFT</button>
+      <button class="tab" id="tabSource">SOURCE FILE</button>
+    </div>
+    <div class="doc-body" id="docBody"></div>
+    <div class="doc-actions">
+      <button class="stamp ghost" id="btnBack">PUT BACK</button>
+      <button class="stamp flag" id="btnFlag">✕ FLAG</button>
+      <button class="stamp approve" id="btnApprove">✓ APPROVE</button>
+    </div>
+  </div>
+</div>
+
+<!-- Letter sheet -->
+<div class="sheet-backdrop" id="letterBack" role="dialog" aria-modal="true" aria-label="Incoming letter">
+  <div class="sheet">
+    <div class="doc-head" style="background:linear-gradient(180deg,#efd9d4,#f2efe6)">
+      <div class="doc-kind" style="color:#a13a32">INCOMING · PRIORITY</div>
+      <div class="doc-title" id="letterFrom"></div>
+    </div>
+    <div class="doc-body" id="letterBody"></div>
+    <div class="doc-actions">
+      <button class="stamp ghost" id="btnLetterClose" style="flex:1">FILE IT</button>
+    </div>
+  </div>
+</div>
+
+<!-- Title sheet -->
+<div class="sheet-backdrop open big-sheet" id="titleBack" role="dialog" aria-modal="true" aria-label="The Night Shift">
+  <div class="sheet dark" id="titleSheet">
+    <div class="doc-body">
+      <div class="t-eyebrow">MERIDIAN UNIVERSITY · OFFICE OF AUTOMATED AFFAIRS</div>
+      <div class="t-title">The Night Shift</div>
+      <div class="t-sub">HUMAN REVIEW DESK · SEAT 1 OF 1</div>
+      <div class="t-fiction" id="fiction"></div>
+      <button class="bigbtn" id="clockIn">⏻ CLOCK IN — 23:00</button>
+    </div>
+  </div>
+</div>
+
+<!-- Help sheet -->
+<div class="sheet-backdrop" id="helpBack" role="dialog" aria-modal="true" aria-label="Help">
+  <div class="sheet dark">
+    <div class="doc-body">
+      <div class="t-eyebrow">FIELD MANUAL</div>
+      <div class="t-fiction" style="margin-top:10px">
+        <p><b>INSPECT</b> opens the parcel on your desk. Read the M-6 draft; open the <b>SOURCE FILE</b> to verify it. Then stamp: <b>APPROVE</b> ships it, <b>FLAG</b> sends it to human escalation.</p>
+        <p>There is no timer — only the belt. It holds six parcels. When a seventh arrives, the oldest waiting parcel <b>auto-clears as approved</b>. Not deciding is a decision.</p>
+        <p>Fast, unverified approvals build a <b>throughput multiplier</b>. Whether throughput is the thing worth maximizing is, in a sense, the entire question.</p>
+        <p>Red mail is a consequence. Read it.</p>
+      </div>
+      <button class="bigbtn quiet" id="helpClose">BACK TO THE DESK</button>
+    </div>
+  </div>
+</div>
+
+<!-- Report sheet -->
+<div class="sheet-backdrop big-sheet" id="reportBack" role="dialog" aria-modal="true" aria-label="Shift report">
+  <div class="sheet dark" id="reportSheet">
+    <div class="doc-body" id="reportBody"></div>
+  </div>
+</div>
+
+<script type="module" src="game.js"></script>
+</body>
+</html>
