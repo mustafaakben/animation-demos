@@ -63,9 +63,28 @@ body{background:var(--deep);color:var(--chalk);font-family:'Karla',sans-serif;ov
 .actl:hover{border-color:var(--amber);color:var(--amber)}
 
 /* ---------- choices ---------- */
-#choices{width:min(96vw,680px);display:none;flex-direction:column;gap:10px;pointer-events:auto}
+#choices{width:min(96vw,680px);display:none;flex-direction:column;gap:10px;pointer-events:auto;
+  max-height:82dvh;overflow-y:auto;overscroll-behavior:contain}
 #choicePrompt{font-family:'Fraunces',serif;font-weight:600;font-size:19px;color:var(--chalk);
   background:rgba(16,20,42,.94);border:1px solid var(--amber);border-radius:14px;padding:14px 18px}
+
+/* inline evidence panel — compact open list above the question */
+#evPanel{width:100%;background:rgba(16,20,42,.94);border:1px solid #3c4468;border-radius:14px;padding:12px 13px;display:none}
+#evPanel .eph{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;color:#9ba1c0;
+  margin-bottom:9px;display:flex;align-items:center;gap:6px}
+#evPanel .eph b{color:var(--amber);font-weight:500}
+.evrow{display:flex;align-items:center;gap:10px;width:100%;background:rgba(15,19,48,.75);border:1px solid #2b3357;
+  border-radius:10px;padding:10px 12px;margin-bottom:6px;cursor:pointer;text-align:left;color:var(--chalk)}
+.evrow:last-child{margin-bottom:0}
+.evrow:hover{border-color:var(--amber)}
+.evrow:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
+.evrow .ic{font-size:18px;flex-shrink:0}
+.evrow .nm{flex:1;font-size:13px;font-weight:600;line-height:1.3}
+.evrow .new{background:var(--amber);color:var(--ink);border-radius:4px;padding:1px 6px;
+  font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.06em;flex-shrink:0}
+.evrow .arw{color:#6d7392;font-size:13px;flex-shrink:0}
+.evrow.seen{opacity:.62}
+.evrow.seen .nm{font-weight:400}
 .opt{background:rgba(244,244,240,.97);color:var(--ink);border:none;border-radius:14px;padding:16px 18px;
   font-family:'Karla',sans-serif;font-size:15px;font-weight:600;text-align:left;cursor:pointer;line-height:1.45}
 .opt:hover{background:var(--amber)}
@@ -160,8 +179,10 @@ h4.rh{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.2em
 /* ---------- scene video layer ---------- */
 #videoLayer{position:fixed;inset:0;z-index:12;display:none;background:#0a0d1c}
 #videoLayer.show{display:block}
-#sceneVid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0a0d1c}
-#vidPoster{position:absolute;inset:0;background-size:cover;background-position:center;display:none}
+/* blurred scene-art fills the screen; the 16:9 video sits inside via contain (never cropped) */
+#vidBackdrop{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(30px) brightness(.42);transform:scale(1.2)}
+#sceneVid{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:transparent}
+#vidPoster{position:absolute;inset:0;background-size:contain;background-repeat:no-repeat;background-position:center;display:none}
 #vidPoster.show{display:block}
 #vidCtl{position:absolute;right:14px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:13;display:flex;gap:8px}
 .vbtn{background:rgba(10,13,28,.8);border:1px solid #3c4468;color:#c9cde0;border-radius:999px;height:44px;padding:0 16px;
@@ -288,8 +309,9 @@ h4.rh{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.2em
 
 <!-- scene video layer -->
 <div id="videoLayer">
-  <div id="vidPoster"></div>
+  <div id="vidBackdrop"></div>
   <video id="sceneVid" playsinline webkit-playsinline preload="auto"></video>
+  <div id="vidPoster"></div>
   <div id="vidTapPlay" role="button" aria-label="Play scene"><div class="big">▶</div></div>
   <div id="vidCtl">
     <button class="vbtn" id="vidReplay" aria-label="Replay scene">↻</button>
@@ -298,18 +320,6 @@ h4.rh{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.2em
   </div>
 </div>
 
-<!-- evidence invitation -->
-<div id="invite">
-  <div id="inviteCard">
-    <div class="ic">🗂️</div>
-    <h3>Before you answer…</h3>
-    <p id="inviteText">You’ve got new materials on your desk. Want to review the evidence before you decide?</p>
-    <div class="row">
-      <button id="inviteReview">▸ REVIEW THE MATERIALS</button>
-      <button id="inviteReady">I’M READY TO ANSWER</button>
-    </div>
-  </div>
-</div>
 
 <div id="hud">
   <span>PHOENIX&nbsp;BRIEF&nbsp;·&nbsp;<b id="clock">8:10</b></span>
@@ -322,6 +332,7 @@ h4.rh{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.2em
 
 <div id="dlg">
   <div id="choices">
+    <div id="evPanel"></div>
     <div id="choicePrompt"></div>
     <div id="optWrap" style="display:flex;flex-direction:column;gap:10px"></div>
   </div>

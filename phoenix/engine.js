@@ -96,7 +96,6 @@ function startScene(id) {
   for (const k of scene.evidence || []) if (!state.unlocked.includes(k)) state.unlocked.push(k);
   updateHUD();
   hideChoices();
-  hideInvite();
 
   const video = (state.lite || state.videoDisabled) ? null : resolveVideo(id);
   if (video) playSceneVideo(video, scene);
@@ -108,6 +107,7 @@ function playSceneVideo(video, scene) {
   state.mode = 'video';
   $('dlg').style.display = 'none';
   const vid = $('sceneVid');
+  $('vidBackdrop').style.backgroundImage = `url(${scene.bg})`;
   $('vidPoster').style.backgroundImage = `url(${scene.bg})`;
   $('vidPoster').classList.add('show');
   $('vidTapPlay').classList.remove('show');
@@ -178,29 +178,28 @@ function afterSceneMedia() {
   // conditional question that resolves without asking (e.g. s5b when already caught)
   const c = scene.choice;
   if (c && c.showIf && c.showIf.not && state.flags[c.showIf.not]) { startScene(c.elseTo); return; }
-  if (unreadKeys().length > 0) showInvite();
-  else showChoices();
+  showChoices();
 }
 
-/* ─────────────── evidence invitation ─────────────── */
-function showInvite() {
-  state.awaitingAnswer = true;
-  $('dlg').style.display = 'none';
-  const n = unreadKeys().length;
-  $('inviteText').textContent = n === 1
-    ? 'There’s a new item on your desk. Want to look before you decide?'
-    : `You’ve got ${n} new materials on your desk. Want to review them before you decide?`;
-  // re-trigger the rise animation
-  const card = $('inviteCard'); card.style.animation = 'none'; void card.offsetWidth; card.style.animation = '';
-  $('invite').classList.add('show');
+/* ─────────────── inline evidence panel (compact open list above the question) ─────────────── */
+function renderEvPanel() {
+  const panel = $('evPanel');
+  const keys = state.unlocked;
+  if (!keys.length) { panel.style.display = 'none'; panel.innerHTML = ''; return; }
+  const nUnread = unreadKeys().length;
+  panel.innerHTML = `<div class="eph">🗂️ MATERIALS ON YOUR DESK${nUnread ? ` · <b>${nUnread} NEW</b>` : ''} — tap to open</div>`
+    + keys.map(k => {
+      const ev = EVIDENCE[k]; const unread = !state.opened.has(k);
+      return `<button class="evrow${unread ? '' : ' seen'}" data-ev="${k}"><span class="ic">${ev.icon}</span>`
+        + `<span class="nm">${esc(ev.title)}</span>${unread ? '<span class="new">NEW</span>' : ''}<span class="arw">▸</span></button>`;
+    }).join('');
+  panel.querySelectorAll('.evrow').forEach(b => b.onclick = () => { state.drawerReturn = 'choices'; openEvidence(b.dataset.ev); });
+  panel.style.display = 'block';
 }
-function hideInvite() { $('invite').classList.remove('show'); }
 
 /* ─────────────── choices ─────────────── */
 function hideChoices() { $('choices').style.display = 'none'; state.choicesShowing = false; }
 function showChoices() {
-  state.awaitingAnswer = false;
-  hideInvite();
   const scene = SCENES[state.sceneId];
   const choice = scene.choice;
   $('dlg').style.display = 'flex';
@@ -209,6 +208,7 @@ function showChoices() {
   if (choice.showIf && choice.showIf.not && state.flags[choice.showIf.not]) { startScene(choice.elseTo); return; }
   state.choicesShowing = true;
   stopAudio();
+  renderEvPanel();
   $('choicePrompt').style.display = choice.prompt ? 'block' : 'none';
   $('choicePrompt').textContent = choice.prompt || '';
   const wrap = $('optWrap'); wrap.innerHTML = '';
@@ -419,16 +419,15 @@ function onDrawerClose() {
   finishEvidenceReturn();
 }
 function finishEvidenceReturn() {
-  if (state.drawerReturn === 'invite' || state.awaitingAnswer) { showInvite(); }
-  else if (state.drawerReturn === 'video' && state.mode === 'video') { try { $('sceneVid').play(); } catch (e) {} }
-  else refreshChoiceLocks();
+  if (state.drawerReturn === 'video' && state.mode === 'video') { try { $('sceneVid').play(); } catch (e) {} }
+  else refreshChoiceLocks();   // re-renders the inline panel (item now seen) + unlocks gated options
 }
 function refreshChoiceLocks() { if (state.choicesShowing) showChoices(); }
 
 /* ═══════════════ debrief ═══════════════ */
 function showDebrief() {
   state.mode = null; stopAudio();
-  $('videoLayer').classList.remove('show'); $('dlg').style.display = 'none'; hideInvite();
+  $('videoLayer').classList.remove('show'); $('dlg').style.display = 'none';
   setBg(SCENES.s12.bg);
   const f = state.flags, fx = state.fx;
   const wrongStat = !f.statCaught;
@@ -514,19 +513,14 @@ $('liteChk').addEventListener('change', e => { state.lite = e.target.checked; })
 // dialogue tap-through
 $('dlgCard').addEventListener('click', advance);
 
-// evidence button — context-aware (pauses video / returns to invite)
+// evidence button — full-drawer browse (pauses video if mid-scene)
 $('evBtn').addEventListener('click', () => {
-  if ($('invite').classList.contains('show')) { hideInvite(); openDrawer('invite'); }
-  else if (state.mode === 'video') { try { $('sceneVid').pause(); } catch (e) {} openDrawer('video'); }
+  if (state.mode === 'video') { try { $('sceneVid').pause(); } catch (e) {} openDrawer('video'); }
   else openDrawer('choices');
 });
 $('drawerClose').addEventListener('click', onDrawerClose);
 $('docClose').addEventListener('click', () => { closeSheet('docBack'); finishEvidenceReturn(); });
 $('imgClose').addEventListener('click', () => { closeSheet('imgBack'); finishEvidenceReturn(); });
-
-// invite pane
-$('inviteReview').addEventListener('click', () => { hideInvite(); openDrawer('invite'); });
-$('inviteReady').addEventListener('click', () => { showChoices(); });
 
 // mute controls both video + fallback audio
 $('muteBtn').addEventListener('click', () => {
@@ -583,7 +577,5 @@ window.__PHX = {
   video: {
     skip: () => $('vidSkip').click(),
     el: () => $('sceneVid'),
-    inviteReview: () => $('inviteReview').click(),
-    inviteReady: () => $('inviteReady').click(),
   },
 };
