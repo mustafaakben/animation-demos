@@ -109,6 +109,77 @@ IMAGES = {
         ),
         "refs": ["maya.jpg", "jordan.jpg"],
     },
+
+    # ── Per-scene shots (v2). Player stays UNSEEN: first-person / over-the-shoulder. ──
+    "sh_s1_brief": {
+        "prompt": (
+            "First-person point of view from an intern's desk chair: the SAME woman from the "
+            "reference (blazer, lanyard, coffee mug, same face and illustration style) sits across "
+            "a shared desk in a morning communications office, mid-sentence, gesturing warmly "
+            "toward the viewer. A monitor glows on the desk between you. Cozy, wide shot. " + STYLE
+        ),
+        "refs": ["maya.jpg"],
+    },
+    "sh_monitor_chat": (
+        "Over-the-shoulder view of a person at a desk facing a large glowing monitor: on screen, "
+        "an AI chat interface as abstract stacked message bubbles (an amber assistant bubble and "
+        "chalk user bubbles, NO readable text), a blinking cursor block. Hands rest on a keyboard "
+        "in the foreground silhouette. Warm amber screen glow in a dark office. " + STYLE
+    ),
+    "sh_s3b_dash": (
+        "Over-the-shoulder view of a person facing a glowing monitor that displays an analytics "
+        "dashboard: two side-by-side line charts as clean glowing curves (one amber, one blue) on "
+        "dark cards, small abstract axis ticks, NO readable text or numbers. Hands near a keyboard "
+        "in the foreground. Cool blue screen light in a dark office. " + STYLE
+    ),
+    "sh_s4_photo": {
+        "prompt": (
+            "Over-the-shoulder view of a monitor showing a photo-viewer application: displayed in "
+            "it is the attached group photo of four students around a poster (same image, same "
+            "style). Simple viewer chrome as blank shapes around it. A hand rests on a mouse in "
+            "the foreground silhouette. Dark office, warm glow. " + STYLE
+        ),
+        "refs": ["photo_team_ai.jpg"],
+    },
+    "sh_s5_ask": {
+        "prompt": (
+            "First-person point of view from an intern's chair: the SAME woman from the reference "
+            "(blazer, lanyard, same face and style) leans in over the corner of your desk, one "
+            "hand on the desk, speaking to the viewer with a quick apologetic smile, a monitor "
+            "glowing to the side. Close, warm, slightly hurried mood. " + STYLE
+        ),
+        "refs": ["maya.jpg"],
+    },
+    "sh_s6_inbox": (
+        "Over-the-shoulder view of a glowing monitor showing an email inbox: a vertical list of "
+        "message rows as blank bars, ONE row near the top highlighted with a red urgent flag and "
+        "a faint red glow, an avatar circle beside it, NO readable text. Hands near keyboard in "
+        "foreground. Tense red-and-amber screen light in a dark office. " + STYLE
+    ),
+    "sh_s7_it": {
+        "prompt": (
+            "First-person point of view standing at an IT security desk: the SAME man from the "
+            "reference (navy polo, badge clip, trimmed beard, headset, same face and style) turns "
+            "from three monitors of abstract network graphs to speak to the viewer, calm and dry, "
+            "gesturing at a screen. Soft blue server glow behind him. " + STYLE
+        ),
+        "refs": ["sam.jpg"],
+    },
+    "sh_s8_breach": {
+        "prompt": (
+            "An IT security desk bathed in red alert glow: the SAME man from the first reference "
+            "(navy polo, badge, headset) at his monitors looking grave; in a doorway behind, the "
+            "SAME woman from the second reference (blazer, lanyard) arrives looking worried. "
+            "Screens show abstract red warning shapes, NO readable text. Tense, cinematic. " + STYLE
+        ),
+        "refs": ["sam.jpg", "maya.jpg"],
+    },
+    "sh_s10a_phone": (
+        "First-person point of view: your own hand in the foreground holds a smartphone that is "
+        "lighting up with a stack of news-alert and message notification cards (blank rectangles "
+        "with small red badges, NO readable text), spilling amber and red light. A dim room "
+        "beyond. Anxious late-morning mood. " + STYLE
+    ),
 }
 
 

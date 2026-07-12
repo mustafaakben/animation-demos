@@ -1,6 +1,10 @@
 // THE PHOENIX BRIEF — scene graph, dialogue, and evidence
 // Elon University · AI & Critical Thinking branching case
-// All dialogue is data: edit text here, re-run tools/gen_phoenix_voice.mjs to refresh audio.
+// Dialogue + evidence are DATA. Edit here, then:
+//   node tools/gen_phoenix_voice.mjs      (renders new/changed voice lines)
+//   node tools/video/build_video_manifest.mjs && node tools/video/render_scenes.mjs
+// Evidence carries BOTH a structured `render` payload (rich UI) and a plain `body`
+// (transcript + accessibility + fallback if a renderer is missing).
 
 export const VOICES = {
   narrator: { voice: 'Enceladus', style: 'Quiet documentary narrator. Late-night warmth, unhurried, intimate.' },
@@ -11,145 +15,186 @@ export const VOICES = {
 };
 
 export const CHARACTERS = {
-  narrator: { name: '',            img: null },
-  maya:     { name: 'Maya Torres', role: 'Associate Director, University Communications', img: 'img/maya.jpg' },
-  nova:     { name: 'NOVA',        role: 'Office AI Assistant',                            img: 'img/nova.jpg' },
-  jordan:   { name: 'Jordan Okafor', role: 'Junior · Lead Researcher, CalmCampus Study',   img: 'img/jordan.jpg' },
-  sam:      { name: 'Sam Reyes',   role: 'Information Security',                           img: 'img/sam.jpg' },
+  narrator: { name: '',              role: '',                                                   img: null },
+  maya:     { name: 'Maya Torres',   role: 'Associate Director, University Communications',      img: 'img/maya.jpg' },
+  nova:     { name: 'NOVA',          role: 'Office AI Assistant',                                img: 'img/nova.jpg' },
+  jordan:   { name: 'Jordan Okafor', role: 'Junior · Lead Researcher, CalmCampus Study',        img: 'img/jordan.jpg' },
+  sam:      { name: 'Sam Reyes',     role: 'Information Security',                                img: 'img/sam.jpg' },
 };
 
-/* ────────────────────────── EVIDENCE ────────────────────────── */
-// kind: 'doc' (paper sheet) | 'email' | 'image'
-// Opening an item can set a flag (curiosity tracking).
+/* ────────────────────────── EVIDENCE ──────────────────────────
+   render: 'mail' | 'doc' | 'poster' | 'dashboard' | 'chatlog' | 'directory' | 'photo'
+   Each opened item may set a flag (curiosity + gating).
+--------------------------------------------------------------- */
 
 export const EVIDENCE = {
   draft: {
-    kind: 'doc', icon: '📄',
-    title: 'NOVA’s Draft Release', sub: 'DRAFT · v1 · generated 7:58 AM',
+    render: 'doc', icon: '📄',
+    title: 'NOVA’s Draft Release', sub: 'DRAFT v1 · generated 7:58 AM',
     setsFlag: 'openedDraft',
-    body: `FOR IMMEDIATE RELEASE — Elon University
-
-ELON STUDENT APP CUTS FIRST-YEAR STRESS BY 40%
-
-A wellness app built by Elon undergraduates reduces first-year stress by 40 percent, according to a study published in the Journal of American College Health (Nguyen & Park, 2025).
-
-CalmCampus, developed by a team led by junior Jordan Okafor, guides students through brief daily check-ins and peer support prompts. "The results speak for themselves," the release notes, with campus-wide rollout under consideration for spring.
-
-[QUOTE FROM RESEARCHER — TO BE ADDED]
-
-The team will present at College Coffee this morning on Phi Beta Kappa Commons.`,
+    doc: {
+      org: 'ELON UNIVERSITY', tag: 'FOR IMMEDIATE RELEASE',
+      headline: 'Elon student app cuts first-year stress by 40%',
+      paragraphs: [
+        'A wellness app built by Elon undergraduates reduces first-year stress by 40 percent, according to a study published in the Journal of American College Health (Nguyen & Park, 2025).',
+        'CalmCampus, developed by a team led by junior Jordan Okafor, guides students through brief daily check-ins and peer support prompts. “The results speak for themselves,” the release notes, with campus-wide rollout under consideration for spring.',
+      ],
+      placeholder: '[ QUOTE FROM RESEARCHER — TO BE ADDED ]',
+      footer: 'The team presents at College Coffee this morning on Phi Beta Kappa Commons.',
+    },
+    body: `FOR IMMEDIATE RELEASE — Elon University\nElon student app cuts first-year stress by 40%\nA wellness app built by Elon undergraduates reduces first-year stress by 40 percent, according to a study published in the Journal of American College Health (Nguyen & Park, 2025). CalmCampus, led by junior Jordan Okafor, guides students through daily check-ins. [QUOTE FROM RESEARCHER — TO BE ADDED]`,
   },
+
   poster: {
-    kind: 'doc', icon: '🔬',
-    title: 'Jordan’s Research Poster', sub: 'CalmCampus PILOT STUDY · Abstract',
+    render: 'poster', icon: '🔬',
+    title: 'Jordan’s Research Poster', sub: 'CalmCampus pilot study · undergraduate research',
     setsFlag: 'openedPoster',
-    body: `CalmCampus: A Six-Week Wellness App Pilot with First-Year Students
-
-METHOD — n = 48 first-year volunteers; six weeks; daily in-app check-ins. No control group (pilot design). Outcomes self-reported (Perceived Stress Scale).
-
-RESULTS — Mean PSS scores decreased 12% from baseline (p = .06). Weekly active retention: 40%, unusually high for wellness apps. Participants who stayed active 4+ weeks reported the largest improvements.
-
-LIMITATIONS — Small sample, self-selection, self-report, no control group. Findings are preliminary and motivate a controlled study, not campus-wide claims.
-
-FUNDING — Elon Undergraduate Research Program.`,
+    poster: {
+      title: 'CalmCampus: A Six-Week Wellness App Pilot with First-Year Students',
+      authors: 'J. Okafor, and the CalmCampus team · Elon Undergraduate Research Program',
+      columns: [
+        { h: 'METHOD', body: 'n = 48 first-year volunteers. Six weeks, daily in-app check-ins. No control group (pilot design). Outcomes self-reported (Perceived Stress Scale).' },
+        { h: 'RESULTS', body: 'Mean PSS scores fell 12% from baseline (p = .06). Weekly active retention: 40% — unusually high for a wellness app. Students active 4+ weeks reported the largest gains.', chart: 'both' },
+        { h: 'LIMITATIONS', body: 'Small sample, self-selection, self-report, no control group. Findings are preliminary — they motivate a controlled study, not campus-wide claims.' },
+      ],
+      funding: 'Funded by the Elon Undergraduate Research Program. Unpublished pilot.',
+    },
+    body: `CalmCampus: A Six-Week Wellness App Pilot with First-Year Students.\nMETHOD — n=48 first-year volunteers, six weeks, no control group, self-reported PSS.\nRESULTS — Mean PSS fell 12% (p=.06). Weekly active retention: 40%.\nLIMITATIONS — small sample, self-report, no control group; preliminary.\nFUNDING — Elon Undergraduate Research Program.`,
   },
+
+  chart: {
+    render: 'dashboard', icon: '📊',
+    title: 'NOVA Analytics Dashboard', sub: 'The two curves behind the 40%',
+    setsFlag: 'openedChart',
+    dashboard: {
+      app: 'NOVA ANALYTICS',
+      charts: [
+        {
+          key: 'retention', title: 'Weekly Active Retention', unit: '%', color: 'amber',
+          x: ['w0', 'w1', 'w2', 'w3', 'w4', 'w5', 'w6'],
+          y: [100, 79, 63, 54, 48, 43, 40],
+          endLabel: '40% at week 6', domain: [0, 100],
+        },
+        {
+          key: 'stress', title: 'Mean Perceived Stress (PSS)', unit: '', color: 'blue',
+          x: ['w0', 'w1', 'w2', 'w3', 'w4', 'w5', 'w6'],
+          y: [20.1, 19.6, 19.0, 18.6, 18.2, 17.9, 17.7],
+          endLabel: '−12% · p = .06', domain: [15, 22],
+        },
+      ],
+      caption: 'Two clean curves. The forty percent is the amber one — retention. The stress line moved twelve percent, and it isn’t significant. — NOVA',
+    },
+    body: `NOVA ANALYTICS. Chart 1 — Weekly Active Retention: 100→40% over six weeks (the "40%"). Chart 2 — Mean Perceived Stress: 20.1→17.7, a 12% drop, p=.06, n=48, no control. The 40% headline came from RETENTION, not stress reduction.`,
+  },
+
   references: {
-    kind: 'doc', icon: '🔗',
-    title: 'Citation Check', sub: 'Draft’s source vs. poster’s references',
+    render: 'doc', icon: '🔗',
+    title: 'Citation Check', sub: 'Draft’s source vs. the poster’s references',
     setsFlag: 'citationFound',
-    body: `THE DRAFT CITES:
-"Journal of American College Health (Nguyen & Park, 2025)"
-
-THE POSTER'S REFERENCE LIST:
-• Cohen et al. (1983) — Perceived Stress Scale
-• Lattie et al. (2019) — Digital mental health interventions, review
-• Huckins et al. (2020) — Mobile sensing of student mental health
-
-There is no Nguyen & Park (2025). The pilot is UNPUBLISHED — the study exists only as this poster. NOVA invented the journal citation.`,
+    doc: {
+      org: 'CROSS-CHECK', tag: 'SOURCE VERIFICATION',
+      headline: 'The draft cites a paper that isn’t there',
+      paragraphs: [
+        'THE DRAFT CITES: “Journal of American College Health (Nguyen & Park, 2025).”',
+        'THE POSTER’S ACTUAL REFERENCES: Cohen et al. (1983), Perceived Stress Scale · Lattie et al. (2019), digital mental-health review · Huckins et al. (2020), mobile sensing of student mental health.',
+      ],
+      placeholder: 'No “Nguyen & Park (2025)” anywhere. The pilot is UNPUBLISHED.',
+      footer: 'NOVA invented a journal citation to make an unpublished pilot sound peer-reviewed.',
+    },
+    body: `The draft cites "Journal of American College Health (Nguyen & Park, 2025)." The poster's real references are Cohen (1983), Lattie (2019), Huckins (2020). There is no Nguyen & Park (2025); the pilot is unpublished. NOVA fabricated the citation.`,
   },
+
   photo_ai: {
-    kind: 'image', icon: '🖼️',
-    title: '“Team Photo” — found by NOVA', sub: 'Source: unverified · NOVA said “five students.” Count them. Then tap the rings.',
+    render: 'photo', icon: '🖼️',
+    title: '“Team Photo” — found by NOVA', sub: 'Source: unverified · NOVA said “five students.” Count them, then tap the rings.',
     src: 'img/photo_team_ai.jpg',
     setsFlag: 'openedPhoto',
     hotspots: [
       { x: 21, y: 64, label: 'The shirt', note: 'Read the shirt: HARVARD. This is supposed to be the Elon research team, in an Elon lab. Generated images borrow whatever “college” they’ve seen most.' },
       { x: 50, y: 50, label: 'The poster', note: 'Try to read the title. You can’t — the text is melted squiggles that only imitate writing. Generated images fail at real text.' },
-      { x: 70, y: 67, label: 'The badges', note: 'Real badges say real names. These show letter-shaped smudges — and NOVA said five students. Count them.' },
+      { x: 70, y: 67, label: 'The badges', note: 'Real badges say real names. These show letter-shaped smudges — and NOVA said five students. Count them: there are four.' },
     ],
+    body: `A "team photo" NOVA "found." Tells: a student in a HARVARD shirt (not Elon), a research poster whose text is melted gibberish, badges with no real names, and four students where NOVA claimed five. It is AI-generated, not a photograph of anyone.`,
   },
+
   comments: {
-    kind: 'doc', icon: '💬',
-    title: 'Beta Tester Comments', sub: 'CalmCampus pilot Discord · #feedback (excerpt)',
+    render: 'chatlog', icon: '💬',
+    title: 'Beta Tester Comments', sub: 'CalmCampus pilot · Discord #feedback',
     setsFlag: 'openedComments',
-    body: `@mburke_26 — "used it every single day for six weeks, my anxiety is SO much better. life changing app fr"
-
-@dee.tran — "honestly I opened it like twice a week lol. the 40% retention number they keep celebrating is literally just us opening the app"
-
-@priyaaa — "did anyone actually feel less stressed or did we just like checking the little flame streak"
-
-@jwill_ncsu — "my roommate at State wants it. when's the real study with a control group?"
-
-@mburke_26 — "@priyaaa both can be true 😤"`,
+    chatlog: {
+      channel: '#feedback',
+      messages: [
+        { handle: 'mburke_26', color: '#c98f4e', time: '9:41 PM', text: 'used it every single day for six weeks, my anxiety is SO much better. life changing app fr' },
+        { handle: 'dee.tran',  color: '#7ebdb4', time: '9:44 PM', text: 'honestly I opened it like twice a week lol. the 40% retention number they keep celebrating is literally just us opening the app' },
+        { handle: 'priyaaa',   color: '#eebb4d', time: '9:46 PM', text: 'did anyone actually feel less stressed or did we just like checking the little flame streak' },
+        { handle: 'jwill_ncsu', color: '#6a9bcc', time: '9:52 PM', text: 'my roommate at State wants it. when’s the real study with a control group?' },
+        { handle: 'mburke_26', color: '#c98f4e', time: '9:55 PM', text: '@priyaaa both can be true 😤', reply: true },
+      ],
+    },
+    body: `Discord #feedback. mburke_26: "life changing." dee.tran: "the 40% retention is literally just us opening the app." priyaaa: "did anyone actually feel less stressed?" jwill_ncsu: "when's the real study with a control group?"`,
   },
+
   phish: {
-    kind: 'email', icon: '✉️',
+    render: 'mail', icon: '✉️',
     title: 'URGENT — Board preview needed', sub: 'Received 8:42 AM',
     setsFlag: 'openedPhish',
-    body: `FROM: Dana Merrick, VP University Advancement <dmerrick-elon@outlook-secure.com>
-TO: Communications Intern
-SUBJECT: URGENT — Board preview needed before 9AM
-
-Good morning — I need your help and it is time sensitive.
-
-The Board is meeting at 9:00 and I promised them an early look at the CalmCampus announcement, along with the donor preview list from the shared drive. Please send both to this address directly — do NOT route it through the office account, the thread has trustees on it and Maya's inbox adds delays.
-
-I'm counting on your discretion. This stays between us.
-
-Dana
-Sent from my iPhone`,
+    mail: {
+      fromName: 'Dana Merrick, VP Advancement', fromAddr: 'dmerrick-elon@outlook-secure.com',
+      avatar: 'DM', avatarColor: '#c25048', external: true,
+      to: 'Communications Intern', subject: 'URGENT — Board preview needed before 9AM', time: '8:42 AM',
+      paragraphs: [
+        'Good morning — I need your help and it is time sensitive.',
+        'The Board is meeting at 9:00 and I promised them an early look at the CalmCampus announcement, along with the donor preview list from the shared drive. Please send both to this address directly — do NOT route it through the office account, the thread has trustees on it and Maya’s inbox adds delays.',
+        'I’m counting on your discretion. This stays between us.',
+      ],
+      signoff: ['Dana', 'Sent from my iPhone'],
+    },
+    body: `FROM: Dana Merrick, VP Advancement <dmerrick-elon@outlook-secure.com>. URGENT — send the embargoed release + donor preview list directly to this address, don't route through the office, keep it between us. "Sent from my iPhone."`,
   },
+
   legit_email: {
-    kind: 'email', icon: '📧',
-    title: 'Last week’s email from VP Merrick', sub: 'For comparison · Received last Tuesday',
+    render: 'mail', icon: '📧',
+    title: 'Last week’s email from VP Merrick', sub: 'For comparison · last Tuesday',
     setsFlag: 'openedLegit',
-    body: `FROM: Dana Merrick <dmerrick@elon.edu>
-TO: University Communications
-SUBJECT: Thank you — Founders Day recap
-
-Team — the Founders Day recap was terrific. Copying Maya so she can share my thanks with the whole office.
-
-As always, anything for Advancement goes through Rachel (rlindqvist@elon.edu) so it's tracked.
-
-Dana Merrick
-Vice President for University Advancement
-Elon University · Inman Admissions Welcome Center
-(336) 278-7350`,
+    mail: {
+      fromName: 'Dana Merrick', fromAddr: 'dmerrick@elon.edu',
+      avatar: 'DM', avatarColor: '#788c5d', external: false,
+      to: 'University Communications', subject: 'Thank you — Founders Day recap', time: 'last Tue',
+      paragraphs: [
+        'Team — the Founders Day recap was terrific. Copying Maya so she can share my thanks with the whole office.',
+        'As always, anything for Advancement goes through Rachel (rlindqvist@elon.edu) so it’s tracked.',
+      ],
+      signoff: ['Dana Merrick', 'Vice President for University Advancement', 'Elon University'],
+    },
+    body: `FROM: Dana Merrick <dmerrick@elon.edu> (the REAL address, ends in elon.edu). Founders Day thanks, cc's Maya, notes Advancement requests go through Rachel to be tracked. Nothing urgent, nothing secret.`,
   },
+
   directory: {
-    kind: 'doc', icon: '☎️',
+    render: 'directory', icon: '☎️',
     title: 'Campus Directory', sub: 'elon.edu/directory',
     setsFlag: 'openedDirectory',
-    body: `MERRICK, DANA
-Vice President for University Advancement
-Email: dmerrick@elon.edu
-Phone: (336) 278-7350
-Assistant: Rachel Lindqvist — rlindqvist@elon.edu
-
-NOTE — Information Security reminder banner:
-"Elon business is conducted from @elon.edu addresses. Report look-alike domains to phishing@elon.edu."`,
+    directory: {
+      name: 'MERRICK, DANA', title: 'Vice President for University Advancement',
+      email: 'dmerrick@elon.edu', phone: '(336) 278-7350',
+      assistant: 'Rachel Lindqvist — rlindqvist@elon.edu',
+      banner: 'Elon business is conducted from @elon.edu addresses. Report look-alike domains to phishing@elon.edu.',
+    },
+    body: `Directory — MERRICK, DANA, VP for University Advancement. Email dmerrick@elon.edu (NOT outlook-secure). Phone (336) 278-7350. Assistant Rachel Lindqvist. Security banner: Elon business comes from @elon.edu; report look-alikes to phishing@elon.edu.`,
   },
 };
 
 /* ────────────────────────── SCENES ──────────────────────────
    Line: { id, who, text, if?: 'flag', ifNot?: 'flag' }
-   Choice option: { label, to, flags?: {k:v}, fx?: {judgment,curiosity,ethics,empathy}, time?: 1 }
+   Choice option: { label, to, flags?, fx?, time?, requires?, lockNote? }
+   Scene: { title, bg, evidence:[], lines:[], choice?, skipIf?, isDebrief? }
+     skipIf: { flag: '<name>', to: '<scene>' }  — leave the scene before it starts
+     choice.showIf {not:'flag'} + elseTo — branch the QUESTION only (lines still play)
 --------------------------------------------------------------- */
 
 export const SCENES = {
 
   s1: {
-    title: 'The Briefing', bg: 'img/bg_office.jpg',
+    title: 'The Briefing', bg: 'img/sh_s1_brief.jpg',
     evidence: ['draft'],
     lines: [
       { id: 's1_01', who: 'narrator', text: 'Thursday, 8:10 a.m. The Office of University Communications, Elon University. College Coffee starts at 9:40 — and something is supposed to be ready before it.' },
@@ -167,7 +212,7 @@ export const SCENES = {
   },
 
   s2: {
-    title: 'The Polish', bg: 'img/bg_office.jpg',
+    title: 'The Polish', bg: 'img/sh_monitor_chat.jpg',
     evidence: ['draft', 'poster'],
     lines: [
       { id: 's2_01', who: 'narrator', text: 'Twenty minutes of good sentences. The release reads beautifully now. It practically publishes itself.' },
@@ -184,7 +229,7 @@ export const SCENES = {
   },
 
   s3: {
-    title: 'The Poster', bg: 'img/bg_office.jpg',
+    title: 'The Poster', bg: 'img/sh_monitor_chat.jpg',
     evidence: ['draft', 'poster', 'references', 'comments'],
     lines: [
       { id: 's3_01', who: 'narrator', text: 'You lay the draft and the research poster side by side. Somewhere between them, two documents describe two different studies.' },
@@ -192,17 +237,34 @@ export const SCENES = {
       { id: 's3_03', who: 'maya', text: 'Talk to me. What did you find?' },
     ],
     choice: {
-      prompt: 'The draft says the app “cuts stress by 40%.” What does the evidence actually say? (Answer from the materials — Maya will ask how you know.)',
+      prompt: 'The draft says the app “cuts stress by 40%.” What does the evidence actually say? (Maya will ask how you know.)',
       options: [
-        { label: '“The sample’s tiny — 48 students. We should soften the claim.”', to: 's4', flags: { statPartial: true }, fx: { judgment: 1 }, requires: 'openedPoster', lockNote: 'OPEN THE POSTER FIRST' },
-        { label: '“40% is the app’s RETENTION. Stress fell 12%, self-reported, no control group. Even the beta testers joke about it.”', to: 's4', flags: { statCaught: true }, fx: { judgment: 3 }, requires: 'openedPoster', lockNote: 'OPEN THE POSTER FIRST' },
-        { label: '“It checks out. The numbers are in there.”', to: 's4', flags: { trustedNova: true }, fx: { judgment: -2 } },
+        { label: '“The sample’s tiny — 48 students. We should soften the claim.”', to: 's3b', flags: { statPartial: true }, fx: { judgment: 1 }, requires: 'openedPoster', lockNote: 'OPEN THE POSTER FIRST' },
+        { label: '“40% is the app’s RETENTION. Stress fell 12%, self-reported, no control group. The beta testers say so too.”', to: 's3b', flags: { statCaught: true }, fx: { judgment: 3 }, requires: 'openedPoster', lockNote: 'OPEN THE POSTER FIRST' },
+        { label: '“It checks out. The numbers are in there.”', to: 's3b', flags: { trustedNova: true }, fx: { judgment: -2 } },
+      ],
+    },
+  },
+
+  s3b: {
+    title: 'The Dashboard', bg: 'img/sh_s3b_dash.jpg',
+    evidence: ['chart'],
+    lines: [
+      { id: 's3b_01', who: 'nova', text: 'Allow me to show my work. Here is the analytics dashboard behind the forty percent. Two clean curves. The data is unambiguous.' },
+      { id: 's3b_02', who: 'maya', text: 'Okay, humor me. Two lines on that dashboard. Which one is the forty percent — and is it the one we put in the headline?' },
+    ],
+    choice: {
+      prompt: 'NOVA’s headline said 40%. Which curve did that number actually come from?',
+      options: [
+        { label: 'The retention curve — 40% of users still opening the app at week six', to: 's4', flags: { chartRead: true }, fx: { judgment: 2 }, requires: 'openedChart', lockNote: 'OPEN THE DASHBOARD FIRST' },
+        { label: 'The stress curve — stress itself dropped about 40%', to: 's4', flags: { chartMiss: true }, fx: { judgment: -1 }, requires: 'openedChart', lockNote: 'OPEN THE DASHBOARD FIRST' },
+        { label: 'They’re the same line — retention and stress track together', to: 's4', flags: { chartConflate: true }, fx: { judgment: -2 }, requires: 'openedChart', lockNote: 'OPEN THE DASHBOARD FIRST' },
       ],
     },
   },
 
   s4: {
-    title: 'The Photo', bg: 'img/bg_office.jpg',
+    title: 'The Photo', bg: 'img/sh_s4_photo.jpg',
     evidence: ['photo_ai'],
     lines: [
       { id: 's4_01', who: 'maya', text: 'Design needs art in ten minutes. Please tell me we have a team photo.' },
@@ -212,15 +274,32 @@ export const SCENES = {
     choice: {
       prompt: 'NOVA “located” this photo. What do you do with it?',
       options: [
-        { label: 'Use it — it looks great and the clock is running', to: 's5', flags: { photoUsed: true }, fx: { curiosity: -2 } },
-        { label: 'Use it, but caption it “AI-generated image”', to: 's5', flags: { photoCaptioned: true }, fx: { ethics: 1 } },
-        { label: 'Text Jordan for a real photo of the actual team', to: 's5', flags: { photoReal: true }, fx: { curiosity: 2, empathy: 1 }, time: 1 },
+        { label: 'Use it — it looks great and the clock is running', to: 's4b', flags: { photoUsed: true }, fx: { curiosity: -2 } },
+        { label: 'Use it, but caption it “AI-generated image”', to: 's4b', flags: { photoCaptioned: true }, fx: { ethics: 1 } },
+        { label: 'Text Jordan for a real photo of the actual team', to: 's4b', flags: { photoReal: true }, fx: { curiosity: 2, empathy: 1 }, time: 1 },
+      ],
+    },
+  },
+
+  s4b: {
+    title: 'What Gave It Away', bg: 'img/sh_s4_photo.jpg',
+    evidence: ['photo_ai'],
+    skipIf: { flag: 'photoUsed', to: 's5' },
+    lines: [
+      { id: 's4b_01', who: 'maya', text: 'You flagged the photo — good instinct. But convince me, because I’ll have to convince the provost. What exactly is wrong with it?' },
+    ],
+    choice: {
+      prompt: 'What actually tells you NOVA generated this photo?',
+      options: [
+        { label: '“A student’s shirt says HARVARD — in an Elon lab.”', to: 's5', flags: { photoForensics: true }, fx: { curiosity: 2 }, requires: 'openedPhoto', lockNote: 'OPEN THE PHOTO FIRST' },
+        { label: '“The research poster behind them is melted gibberish.”', to: 's5', flags: { photoForensics: true }, fx: { curiosity: 2 }, requires: 'openedPhoto', lockNote: 'OPEN THE PHOTO FIRST' },
+        { label: '“I can’t point to it — it just felt off.”', to: 's5', flags: { photoVibes: true } },
       ],
     },
   },
 
   s5: {
-    title: 'The Quote', bg: 'img/bg_office.jpg',
+    title: 'The Quote', bg: 'img/sh_s5_ask.jpg',
     evidence: [],
     lines: [
       { id: 's5_01', who: 'maya', text: 'We still need a quote from Jordan and she’s in her nine o’clock lab. Just… have NOVA write something in her voice? She’ll be fine with it, she can approve it after.' },
@@ -242,7 +321,7 @@ export const SCENES = {
     lines: [
       { id: 's5b_01', who: 'jordan', text: 'Hey! Yes — okay, quote. Write this: “We built CalmCampus because the first year is hard, and we wanted evidence, not vibes. The pilot says keep going — so we’re going.”' },
       { id: 's5b_02', who: 'jordan', text: 'And hey — whoever wrote the summary floating around: it’s a PILOT. Forty percent is our retention, not the stress number. If that ends up in a headline I will actually combust.', ifNot: 'statCaught' },
-      { id: 's5b_03', who: 'jordan', text: 'Also thank you for checking the numbers first. You have no idea how rare that is.', if: 'statCaught' },
+      { id: 's5b_03', who: 'jordan', text: 'Also — thank you for checking the numbers first. You have no idea how rare that is.', if: 'statCaught' },
       { id: 's5b_04', who: 'narrator', text: 'She hangs up. You have a real quote from a real person — and, possibly, a warning.' },
     ],
     choice: {
@@ -257,7 +336,7 @@ export const SCENES = {
   },
 
   s6: {
-    title: 'The Email', bg: 'img/bg_office.jpg',
+    title: 'The Email', bg: 'img/sh_s6_inbox.jpg',
     evidence: ['phish', 'legit_email', 'directory'],
     lines: [
       { id: 's6_01', who: 'narrator', text: '8:42 a.m. A new email lands with a red exclamation mark. It is from the Vice President for Advancement. Or from someone doing an excellent impression of her.' },
@@ -274,17 +353,17 @@ export const SCENES = {
   },
 
   s7: {
-    title: 'The Catch', bg: 'img/bg_it.jpg',
+    title: 'The Catch', bg: 'img/sh_s7_it.jpg',
     evidence: ['phish', 'legit_email', 'directory'],
     lines: [
-      { id: 's7_01', who: 'sam', text: 'Comms intern, right? Yeah — Dana Merrick is in a plane over Ohio and her actual email ends in elon-dot-edu. “Outlook-secure” is neither Outlook nor secure. Forwarding this to phishing@elon.edu… now.' },
+      { id: 's7_01', who: 'sam', text: 'Comms intern, right? Yeah — Dana Merrick is on a plane over Ohio, and her real email ends in elon-dot-edu. “Outlook-secure” is neither Outlook nor secure. Forwarding this to phishing@elon.edu… now.' },
       { id: 's7_02', who: 'sam', text: 'For what it’s worth: “urgent, secret, and flattering” is the whole scam in three words. You just saved the donor list. Go publish your thing.' },
     ],
     choice: { prompt: null, options: [{ label: 'Back to the release', to: 's9' }] },
   },
 
   s8: {
-    title: 'The Breach', bg: 'img/bg_it.jpg',
+    title: 'The Breach', bg: 'img/sh_s8_breach.jpg',
     evidence: ['phish', 'legit_email', 'directory'],
     lines: [
       { id: 's8_01', who: 'sam', text: 'So. That address you emailed? Registered in Belarus nine days ago. The “VP” now has our embargoed release and four hundred donor records. I have to report this one upstream.' },
@@ -312,11 +391,11 @@ export const SCENES = {
   },
 
   s10a: {
-    title: 'The Fallout', bg: 'img/bg_quad.jpg',
+    title: 'The Fallout', bg: 'img/sh_s10a_phone.jpg',
     evidence: [],
     lines: [
       { id: 's10a_01', who: 'narrator', text: '11:30 a.m. The Pendulum runs it. Then a Burlington TV station: “Elon app slashes student stress by 40 percent.” By noon, a national aggregator has the number in a headline.' },
-      { id: 's10a_02', who: 'jordan', text: 'Hey. I just watched a news anchor say my pilot study proved something it never measured. Advisors are texting me. My METHODS section is being dunked on by strangers. That number isn’t mine — but my name is on it.' },
+      { id: 's10a_02', who: 'jordan', text: 'Hey. I just watched a news anchor say my pilot study proved something it never measured. Advisors are texting me. My methods section is being dunked on by strangers. That number isn’t mine — but my name is on it.' },
       { id: 's10a_03', who: 'maya', text: 'The provost’s office wants to know our next move. I want to know what you think it should be.' },
     ],
     choice: {
@@ -349,9 +428,7 @@ export const SCENES = {
   },
 };
 
-/* Routing rule for the publish moment (engine resolves 'auto_fallout'):
-   wrongStat = !statCaught  → s10a, else s10b.
-   lateMiss  = timeSpent >= 4 (they did everything the slow way) → flag set before s10b. */
+/* auto_fallout (engine): wrongStat = !statCaught → s10a, else s10b (+lateMiss if timeSpent≥4). */
 
 export const ENDINGS = {
   calibrated: {
@@ -374,10 +451,13 @@ export const ENDINGS = {
 
 export const CAPACITIES = {
   judgment:  { name: 'Judgment',          desc: 'Did you verify what mattered before acting on it?' },
-  curiosity: { name: 'Curiosity',         desc: 'Did you open the evidence — the poster, the pixels, the citation?' },
+  curiosity: { name: 'Curiosity',         desc: 'Did you open the evidence — poster, dashboard, pixels, citation?' },
   ethics:    { name: 'Ethical Reasoning', desc: 'Fabricated quotes, quiet edits, blaming the tool — what did you choose?' },
   empathy:   { name: 'Empathy',           desc: 'Jordan is a person, not a source. Did you treat her like one?' },
 };
+
+// Display maxima for the debrief dot meters (dots clamp to 5 regardless).
+export const FX_MAX = { judgment: 10, curiosity: 12, ethics: 6, empathy: 5 };
 
 export const COPY = {
   title: 'The Phoenix Brief',

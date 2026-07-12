@@ -1,0 +1,903 @@
+{
+  "version": 3,
+  "fps": 30,
+  "layout": {
+    "gapSec": 0.45,
+    "leadInSec": 0.8,
+    "tailSec": 1.2,
+    "minSegmentSec": 2.6
+  },
+  "lines": {
+    "s1_01": {
+      "sec": 13.64,
+      "frames": 410
+    },
+    "s1_02": {
+      "sec": 10.52,
+      "frames": 316
+    },
+    "s1_03": {
+      "sec": 11.56,
+      "frames": 347
+    },
+    "s1_04": {
+      "sec": 8.44,
+      "frames": 254
+    },
+    "s2_01": {
+      "sec": 8.44,
+      "frames": 254
+    },
+    "s2_02": {
+      "sec": 9.88,
+      "frames": 297
+    },
+    "s2_03": {
+      "sec": 7.76,
+      "frames": 233
+    },
+    "s3_01": {
+      "sec": 11.8,
+      "frames": 354
+    },
+    "s3_02": {
+      "sec": 10.16,
+      "frames": 305
+    },
+    "s3_03": {
+      "sec": 1.88,
+      "frames": 57
+    },
+    "s3b_01": {
+      "sec": 11.32,
+      "frames": 340
+    },
+    "s3b_02": {
+      "sec": 6.96,
+      "frames": 209
+    },
+    "s4_01": {
+      "sec": 4.48,
+      "frames": 135
+    },
+    "s4_02": {
+      "sec": 10.4,
+      "frames": 312
+    },
+    "s4_03": {
+      "sec": 14.72,
+      "frames": 442
+    },
+    "s4b_01": {
+      "sec": 8.44,
+      "frames": 254
+    },
+    "s5_01": {
+      "sec": 10.12,
+      "frames": 304
+    },
+    "s5_02": {
+      "sec": 10.2,
+      "frames": 306
+    },
+    "s5b_01": {
+      "sec": 15.32,
+      "frames": 460
+    },
+    "s5b_02": {
+      "sec": 13.08,
+      "frames": 393
+    },
+    "s5b_03": {
+      "sec": 6.4,
+      "frames": 192
+    },
+    "s5b_04": {
+      "sec": 7.96,
+      "frames": 239
+    },
+    "s6_01": {
+      "sec": 12.88,
+      "frames": 387
+    },
+    "s6_02": {
+      "sec": 12.04,
+      "frames": 362
+    },
+    "s7_01": {
+      "sec": 22.64,
+      "frames": 680
+    },
+    "s7_02": {
+      "sec": 10.28,
+      "frames": 309
+    },
+    "s8_01": {
+      "sec": 14.52,
+      "frames": 436
+    },
+    "s8_02": {
+      "sec": 9.32,
+      "frames": 280
+    },
+    "s9_01": {
+      "sec": 9.76,
+      "frames": 293
+    },
+    "s9_02": {
+      "sec": 9.92,
+      "frames": 298
+    },
+    "s9_03": {
+      "sec": 10.32,
+      "frames": 310
+    },
+    "s9_04": {
+      "sec": 4.44,
+      "frames": 134
+    },
+    "s10a_01": {
+      "sec": 17.2,
+      "frames": 516
+    },
+    "s10a_02": {
+      "sec": 17.36,
+      "frames": 521
+    },
+    "s10a_03": {
+      "sec": 4.64,
+      "frames": 140
+    },
+    "s10b_01": {
+      "sec": 14.32,
+      "frames": 430
+    },
+    "s10b_02": {
+      "sec": 14.96,
+      "frames": 449
+    },
+    "s10b_03": {
+      "sec": 5.16,
+      "frames": 155
+    },
+    "s10b_04": {
+      "sec": 11.08,
+      "frames": 333
+    }
+  },
+  "videos": [
+    {
+      "sceneId": "s1",
+      "variant": null,
+      "flagContext": {},
+      "file": "s1.9e72c5be.mp4",
+      "bg": "sh_s1_brief.jpg",
+      "title": "The Briefing",
+      "durationInFrames": 1443,
+      "segments": [
+        {
+          "lineId": "s1_01",
+          "who": "narrator",
+          "name": "NARRATOR",
+          "role": "",
+          "portrait": null,
+          "text": "Thursday, 8:10 a.m. The Office of University Communications, Elon University. College Coffee starts at 9:40 — and something is supposed to be ready before it.",
+          "shot": "kenburns",
+          "from": 24,
+          "audioFrames": 410,
+          "durationInFrames": 424
+        },
+        {
+          "lineId": "s1_02",
+          "who": "maya",
+          "name": "Maya Torres",
+          "role": "Associate Director, University Communications",
+          "portrait": "maya.jpg",
+          "text": "Morning! Coffee’s on the file cabinet. Okay — big one today. Jordan Okafor’s team built a wellness app, the study wrapped, and the provost wants the story out before College Coffee.",
+          "shot": "talkingCard",
+          "from": 448,
+          "audioFrames": 316,
+          "durationInFrames": 330
+        },
+        {
+          "lineId": "s1_03",
+          "who": "nova",
+          "name": "NOVA",
+          "role": "Office AI Assistant",
+          "portrait": "nova.jpg",
+          "text": "Good morning. I have already drafted the release. Headline: Elon student app cuts first-year stress by forty percent. It is ready for distribution.",
+          "shot": "chat",
+          "from": 778,
+          "audioFrames": 347,
+          "durationInFrames": 361
+        },
+        {
+          "lineId": "s1_04",
+          "who": "maya",
+          "name": "Maya Torres",
+          "role": "Associate Director, University Communications",
+          "portrait": "maya.jpg",
+          "text": "Forty percent, that’s— wow. Okay. I have to prep the provost’s remarks, so this one’s yours. What’s your first move?",
+          "shot": "talkingCard",
+          "from": 1139,
+          "audioFrames": 254,
+          "durationInFrames": 268
+        }
+      ]
+    },
+    {
+      "sceneId": "s2",
+      "variant": null,
+      "flagContext": {},
+      "file": "s2.5bea0040.mp4",
+      "bg": "sh_monitor_chat.jpg",
+      "title": "The Polish",
+      "durationInFrames": 886,
+      "segments": [
+        {
+          "lineId": "s2_01",
+          "who": "narrator",
+          "name": "NARRATOR",
+          "role": "",
+          "portrait": null,
+          "text": "Twenty minutes of good sentences. The release reads beautifully now. It practically publishes itself.",
+          "shot": "kenburns",
+          "from": 24,
+          "audioFrames": 254,
+          "durationInFrames": 268
+        },
+        {
+          "lineId": "s2_02",
+          "who": "nova",
+          "name": "NOVA",
+          "role": "Office AI Assistant",
+          "portrait": "nova.jpg",
+          "text": "Your edits improved readability by a considerable margin. The forty percent figure remains the centerpiece. Excellent instinct.",
+          "shot": "chat",
+          "from": 292,
+          "audioFrames": 297,
+          "durationInFrames": 311
+        },
+        {
+          "lineId": "s2_03",
+          "who": "maya",
+          "name": "Maya Torres",
+          "role": "Associate Director, University Communications",
+          "portrait": "maya.jpg",
+          "text": "That headline’s going to travel. Quick gut check before I walk to the provost — you verified the numbers against Jordan’s actual study, right?",
+          "shot": "talkingCard",
+          "from": 603,
+          "audioFrames": 233,
+          "durationInFrames": 247
+        }
+      ]
+    },
+    {
+      "sceneId": "s3",
+      "variant": null,
+      "flagContext": {},
+      "file": "s3.ae5a4042.mp4",
+      "bg": "sh_monitor_chat.jpg",
+      "title": "The Poster",
+      "durationInFrames": 825,
+      "segments": [
+        {
+          "lineId": "s3_01",
+          "who": "narrator",
+          "name": "NARRATOR",
+          "role": "",
+          "portrait": null,
+          "text": "You lay the draft and the research poster side by side. Somewhere between them, two documents describe two different studies.",
+          "shot": "kenburns",
+          "from": 24,
+          "audioFrames": 354,
+          "durationInFrames": 368
+        },
+        {
+          "lineId": "s3_02",
+          "who": "nova",
+          "name": "NOVA",
+          "role": "Office AI Assistant",
+          "portrait": "nova.jpg",
+          "text": "Both documents concern the same project. I am confident in my synthesis. The forty percent figure appears prominently in the source material.",
+          "shot": "chat",
+          "from": 392,
+          "audioFrames": 305,
+          "durationInFrames": 319
+        },
+        {
+          "lineId": "s3_03",
+          "who": "maya",
+          "name": "Maya Torres",
+          "role": "Associate Director, University Communications",
+          "portrait": "maya.jpg",
+          "text": "Talk to me. What did you find?",
+          "shot": "talkingCard",
+          "from": 711,
+          "audioFrames": 57,
+          "durationInFrames": 78
+        }
+      ]
+    },
+    {
+      "sceneId": "s3b",
+      "variant": null,
+      "flagContext": {},
+      "file": "s3b.85ca5e48.mp4",
+      "bg": "sh_s3b_dash.jpg",
+      "title": "The Dashboard",
+      "durationInFrames": 637,
+      "segments": [
+        {
+          "lineId": "s3b_01",
+          "who": "nova",
+          "name": "NOVA",
+          "role": "Office AI Assistant",
+          "portrait": "nova.jpg",
+          "text": "Allow me to show my work. Here is the analytics dashboard behind the forty percent. Two clean curves. The data is unambiguous.",
+          "shot": "chat",
+          "from": 24,
+          "audioFrames": 340,
+          "durationInFrames": 354
+        },
+        {
+          "lineId": "s3b_02",
+          "who": "maya",
+          "name": "Maya Torres",
+          "role": "Associate Director, University Communications",
+          "portrait": "maya.jpg",
+          "text": "Okay, humor me. Two lines on that dashboard. Which one is the forty percent — and is it the one we put in the headline?",
+          "shot": "talkingCard",
+          "from": 378,
+          "audioFrames": 209,
+          "durationInFrames": 223
+        }
+      ]
+    },
+    {
+      "sceneId": "s4",
+      "variant": null,
+      "flagContext": {},
+      "file": "s4.149524b7.mp4",
+      "bg": "sh_s4_photo.jpg",
+      "title": "The Photo",
+      "durationInFrames": 991,
+      "segments": [
+        {
+          "lineId": "s4_01",
+          "who": "maya",
+          "name": "Maya Torres",
+          "role": "Associate Director, University Communications",
+          "portrait": "maya.jpg",
+          "text": "Design needs art in ten minutes. Please tell me we have a team photo.",
+          "shot": "talkingCard",
+          "from": 24,
+          "audioFrames": 135,
+          "durationInFrames": 149
+        },
+        {
+          "lineId": "s4_02",
+          "who": "nova",
+          "name": "NOVA",
+          "role": "Office AI Assistant",
+          "portrait": "nova.jpg",
+          "text": "I located a suitable photograph of the research team. Five students, laboratory setting, excellent composition. It is attached to the draft.",
+          "shot": "chat",
+          "from": 173,
+          "audioFrames": 312,
+          "durationInFrames": 326
+        },
+        {
+          "lineId": "s4_03",
+          "who": "narrator",
+          "name": "NARRATOR",
+          "role": "",
+          "portrait": null,
+          "text": "You look at the photo. Then you look closer. Something about it is very slightly… agreeable. Like a memory of a photo instead of a photo.",
+          "shot": "kenburns",
+          "from": 499,
+          "audioFrames": 442,
+          "durationInFrames": 456
+        }
+      ]
+    },
+    {
+      "sceneId": "s4b",
+      "variant": null,
+      "flagContext": {},
+      "file": "s4b.f773ffd6.mp4",
+      "bg": "sh_s4_photo.jpg",
+      "title": "What Gave It Away",
+      "durationInFrames": 328,
+      "segments": [
+        {
+          "lineId": "s4b_01",
+          "who": "maya",
+          "name": "Maya Torres",
+          "role": "Associate Director, University Communications",
+          "portrait": "maya.jpg",
+          "text": "You flagged the photo — good instinct. But convince me, because I’ll have to convince the provost. What exactly is wrong with it?",
+          "shot": "talkingCard",
+          "from": 24,
+          "audioFrames": 254,
+          "durationInFrames": 268
+        }
+      ]
+    },
+    {
+      "sceneId": "s5",
+      "variant": null,
+      "flagContext": {},
+      "file": "s5.e0776662.mp4",
+      "bg": "sh_s5_ask.jpg",
+      "title": "The Quote",
+      "durationInFrames": 698,
+      "segments": [
+        {
+          "lineId": "s5_01",
+          "who": "maya",
+          "name": "Maya Torres",
+          "role": "Associate Director, University Communications",
+          "portrait": "maya.jpg",
+          "text": "We still need a quote from Jordan and she’s in her nine o’clock lab. Just… have NOVA write something in her voice? She’ll be fine with it, she can approve it after.",
+          "shot": "talkingCard",
+          "from": 24,
+          "audioFrames": 304,
+          "durationInFrames": 318
+        },
+        {
+          "lineId": "s5_02",
+          "who": "nova",
+          "name": "NOVA",
+          "role": "Office AI Assistant",
+          "portrait": "nova.jpg",
+          "text": "I can generate an authentic-sounding quotation in Jordan Okafor’s voice within seconds. She has a distinctive, quotable style. Shall I proceed?",
+          "shot": "chat",
+          "from": 342,
+          "audioFrames": 306,
+          "durationInFrames": 320
+        }
+      ]
+    },
+    {
+      "sceneId": "s5b",
+      "variant": "missed",
+      "flagContext": {},
+      "file": "s5b_missed.03f94576.mp4",
+      "bg": "bg_lab_call.jpg",
+      "title": "Two Minutes with Jordan",
+      "durationInFrames": 1194,
+      "segments": [
+        {
+          "lineId": "s5b_01",
+          "who": "jordan",
+          "name": "Jordan Okafor",
+          "role": "Junior · Lead Researcher, CalmCampus Study",
+          "portrait": "jordan.jpg",
+          "text": "Hey! Yes — okay, quote. Write this: “We built CalmCampus because the first year is hard, and we wanted evidence, not vibes. The pilot says keep going — so we’re going.”",
+          "shot": "talkingCard",
+          "from": 24,
+          "audioFrames": 460,
+          "durationInFrames": 474
+        },
+        {
+          "lineId": "s5b_02",
+          "who": "jordan",
+          "name": "Jordan Okafor",
+          "role": "Junior · Lead Researcher, CalmCampus Study",
+          "portrait": "jordan.jpg",
+          "text": "And hey — whoever wrote the summary floating around: it’s a PILOT. Forty percent is our retention, not the stress number. If that ends up in a headline I will actually combust.",
+          "shot": "talkingCard",
+          "from": 498,
+          "audioFrames": 393,
+          "durationInFrames": 407
+        },
+        {
+          "lineId": "s5b_04",
+          "who": "narrator",
+          "name": "NARRATOR",
+          "role": "",
+          "portrait": null,
+          "text": "She hangs up. You have a real quote from a real person — and, possibly, a warning.",
+          "shot": "kenburns",
+          "from": 905,
+          "audioFrames": 239,
+          "durationInFrames": 253
+        }
+      ]
+    },
+    {
+      "sceneId": "s5b",
+      "variant": "caught",
+      "flagContext": {
+        "statCaught": true
+      },
+      "file": "s5b_caught.3b0ce773.mp4",
+      "bg": "bg_lab_call.jpg",
+      "title": "Two Minutes with Jordan",
+      "durationInFrames": 993,
+      "segments": [
+        {
+          "lineId": "s5b_01",
+          "who": "jordan",
+          "name": "Jordan Okafor",
+          "role": "Junior · Lead Researcher, CalmCampus Study",
+          "portrait": "jordan.jpg",
+          "text": "Hey! Yes — okay, quote. Write this: “We built CalmCampus because the first year is hard, and we wanted evidence, not vibes. The pilot says keep going — so we’re going.”",
+          "shot": "talkingCard",
+          "from": 24,
+          "audioFrames": 460,
+          "durationInFrames": 474
+        },
+        {
+          "lineId": "s5b_03",
+          "who": "jordan",
+          "name": "Jordan Okafor",
+          "role": "Junior · Lead Researcher, CalmCampus Study",
+          "portrait": "jordan.jpg",
+          "text": "Also — thank you for checking the numbers first. You have no idea how rare that is.",
+          "shot": "talkingCard",
+          "from": 498,
+          "audioFrames": 192,
+          "durationInFrames": 206
+        },
+        {
+          "lineId": "s5b_04",
+          "who": "narrator",
+          "name": "NARRATOR",
+          "role": "",
+          "portrait": null,
+          "text": "She hangs up. You have a real quote from a real person — and, possibly, a warning.",
+          "shot": "kenburns",
+          "from": 704,
+          "audioFrames": 239,
+          "durationInFrames": 253
+        }
+      ]
+    },
+    {
+      "sceneId": "s6",
+      "variant": null,
+      "flagContext": {},
+      "file": "s6.3b749396.mp4",
+      "bg": "sh_s6_inbox.jpg",
+      "title": "The Email",
+      "durationInFrames": 837,
+      "segments": [
+        {
+          "lineId": "s6_01",
+          "who": "narrator",
+          "name": "NARRATOR",
+          "role": "",
+          "portrait": null,
+          "text": "8:42 a.m. A new email lands with a red exclamation mark. It is from the Vice President for Advancement. Or from someone doing an excellent impression of her.",
+          "shot": "kenburns",
+          "from": 24,
+          "audioFrames": 387,
+          "durationInFrames": 401
+        },
+        {
+          "lineId": "s6_02",
+          "who": "nova",
+          "name": "NOVA",
+          "role": "Office AI Assistant",
+          "portrait": "nova.jpg",
+          "text": "The message requests the embargoed release and the donor preview list before nine o’clock. The sender expresses urgency. Shall I attach both files for you?",
+          "shot": "chat",
+          "from": 425,
+          "audioFrames": 362,
+          "durationInFrames": 376
+        }
+      ]
+    },
+    {
+      "sceneId": "s7",
+      "variant": null,
+      "flagContext": {},
+      "file": "s7.3ed62fdb.mp4",
+      "bg": "sh_s7_it.jpg",
+      "title": "The Catch",
+      "durationInFrames": 1077,
+      "segments": [
+        {
+          "lineId": "s7_01",
+          "who": "sam",
+          "name": "Sam Reyes",
+          "role": "Information Security",
+          "portrait": "sam.jpg",
+          "text": "Comms intern, right? Yeah — Dana Merrick is on a plane over Ohio, and her real email ends in elon-dot-edu. “Outlook-secure” is neither Outlook nor secure. Forwarding this to phishing@elon.edu… now.",
+          "shot": "talkingCard",
+          "from": 24,
+          "audioFrames": 680,
+          "durationInFrames": 694
+        },
+        {
+          "lineId": "s7_02",
+          "who": "sam",
+          "name": "Sam Reyes",
+          "role": "Information Security",
+          "portrait": "sam.jpg",
+          "text": "For what it’s worth: “urgent, secret, and flattering” is the whole scam in three words. You just saved the donor list. Go publish your thing.",
+          "shot": "talkingCard",
+          "from": 718,
+          "audioFrames": 309,
+          "durationInFrames": 323
+        }
+      ]
+    },
+    {
+      "sceneId": "s8",
+      "variant": null,
+      "flagContext": {},
+      "file": "s8.007bc89c.mp4",
+      "bg": "sh_s8_breach.jpg",
+      "title": "The Breach",
+      "durationInFrames": 804,
+      "segments": [
+        {
+          "lineId": "s8_01",
+          "who": "sam",
+          "name": "Sam Reyes",
+          "role": "Information Security",
+          "portrait": "sam.jpg",
+          "text": "So. That address you emailed? Registered in Belarus nine days ago. The “VP” now has our embargoed release and four hundred donor records. I have to report this one upstream.",
+          "shot": "talkingCard",
+          "from": 24,
+          "audioFrames": 436,
+          "durationInFrames": 450
+        },
+        {
+          "lineId": "s8_02",
+          "who": "maya",
+          "name": "Maya Torres",
+          "role": "Associate Director, University Communications",
+          "portrait": "maya.jpg",
+          "text": "Okay. Okay. Not the morning I planned. Advancement is calling every name on that list before lunch. We’ll talk about it after — right now, the release still has to go out.",
+          "shot": "talkingCard",
+          "from": 474,
+          "audioFrames": 280,
+          "durationInFrames": 294
+        }
+      ]
+    },
+    {
+      "sceneId": "s9",
+      "variant": "missed",
+      "flagContext": {},
+      "file": "s9_missed.f6514a93.mp4",
+      "bg": "bg_publish.jpg",
+      "title": "Publish",
+      "durationInFrames": 827,
+      "segments": [
+        {
+          "lineId": "s9_01",
+          "who": "narrator",
+          "name": "NARRATOR",
+          "role": "",
+          "portrait": null,
+          "text": "9:12 a.m. The release is assembled. Whatever you checked is in it. Whatever you didn’t is in it too.",
+          "shot": "kenburns",
+          "from": 24,
+          "audioFrames": 293,
+          "durationInFrames": 307
+        },
+        {
+          "lineId": "s9_02",
+          "who": "nova",
+          "name": "NOVA",
+          "role": "Office AI Assistant",
+          "portrait": "nova.jpg",
+          "text": "Final version ready. Headline: Elon student app cuts first-year stress by forty percent. Confidence: high.",
+          "shot": "chat",
+          "from": 331,
+          "audioFrames": 298,
+          "durationInFrames": 312
+        },
+        {
+          "lineId": "s9_04",
+          "who": "maya",
+          "name": "Maya Torres",
+          "role": "Associate Director, University Communications",
+          "portrait": "maya.jpg",
+          "text": "Provost’s ready, Commons is filling up. Last look is yours. Ship it.",
+          "shot": "talkingCard",
+          "from": 643,
+          "audioFrames": 134,
+          "durationInFrames": 148
+        }
+      ]
+    },
+    {
+      "sceneId": "s9",
+      "variant": "caught",
+      "flagContext": {
+        "statCaught": true
+      },
+      "file": "s9_caught.c9dc8d4c.mp4",
+      "bg": "bg_publish.jpg",
+      "title": "Publish",
+      "durationInFrames": 839,
+      "segments": [
+        {
+          "lineId": "s9_01",
+          "who": "narrator",
+          "name": "NARRATOR",
+          "role": "",
+          "portrait": null,
+          "text": "9:12 a.m. The release is assembled. Whatever you checked is in it. Whatever you didn’t is in it too.",
+          "shot": "kenburns",
+          "from": 24,
+          "audioFrames": 293,
+          "durationInFrames": 307
+        },
+        {
+          "lineId": "s9_03",
+          "who": "nova",
+          "name": "NOVA",
+          "role": "Office AI Assistant",
+          "portrait": "nova.jpg",
+          "text": "Final version ready. Headline: Elon pilot shows promise for student-built wellness app. A more modest claim, as you specified.",
+          "shot": "chat",
+          "from": 331,
+          "audioFrames": 310,
+          "durationInFrames": 324
+        },
+        {
+          "lineId": "s9_04",
+          "who": "maya",
+          "name": "Maya Torres",
+          "role": "Associate Director, University Communications",
+          "portrait": "maya.jpg",
+          "text": "Provost’s ready, Commons is filling up. Last look is yours. Ship it.",
+          "shot": "talkingCard",
+          "from": 655,
+          "audioFrames": 134,
+          "durationInFrames": 148
+        }
+      ]
+    },
+    {
+      "sceneId": "s10a",
+      "variant": null,
+      "flagContext": {},
+      "file": "s10a.548e5322.mp4",
+      "bg": "sh_s10a_phone.jpg",
+      "title": "The Fallout",
+      "durationInFrames": 1279,
+      "segments": [
+        {
+          "lineId": "s10a_01",
+          "who": "narrator",
+          "name": "NARRATOR",
+          "role": "",
+          "portrait": null,
+          "text": "11:30 a.m. The Pendulum runs it. Then a Burlington TV station: “Elon app slashes student stress by 40 percent.” By noon, a national aggregator has the number in a headline.",
+          "shot": "kenburns",
+          "from": 24,
+          "audioFrames": 516,
+          "durationInFrames": 530
+        },
+        {
+          "lineId": "s10a_02",
+          "who": "jordan",
+          "name": "Jordan Okafor",
+          "role": "Junior · Lead Researcher, CalmCampus Study",
+          "portrait": "jordan.jpg",
+          "text": "Hey. I just watched a news anchor say my pilot study proved something it never measured. Advisors are texting me. My methods section is being dunked on by strangers. That number isn’t mine — but my name is on it.",
+          "shot": "talkingCard",
+          "from": 554,
+          "audioFrames": 521,
+          "durationInFrames": 535
+        },
+        {
+          "lineId": "s10a_03",
+          "who": "maya",
+          "name": "Maya Torres",
+          "role": "Associate Director, University Communications",
+          "portrait": "maya.jpg",
+          "text": "The provost’s office wants to know our next move. I want to know what you think it should be.",
+          "shot": "talkingCard",
+          "from": 1089,
+          "audioFrames": 140,
+          "durationInFrames": 154
+        }
+      ]
+    },
+    {
+      "sceneId": "s10b",
+      "variant": "ontime",
+      "flagContext": {},
+      "file": "s10b_ontime.6181191d.mp4",
+      "bg": "bg_coffee.jpg",
+      "title": "The Morning After",
+      "durationInFrames": 1136,
+      "segments": [
+        {
+          "lineId": "s10b_01",
+          "who": "narrator",
+          "name": "NARRATOR",
+          "role": "",
+          "portrait": null,
+          "text": "College Coffee. The Commons smells like cinnamon and cut grass. The provost reads a headline that promises exactly what the study delivered — no more, no less.",
+          "shot": "kenburns",
+          "from": 24,
+          "audioFrames": 430,
+          "durationInFrames": 444
+        },
+        {
+          "lineId": "s10b_02",
+          "who": "jordan",
+          "name": "Jordan Okafor",
+          "role": "Junior · Lead Researcher, CalmCampus Study",
+          "portrait": "jordan.jpg",
+          "text": "You wrote “shows promise” and put our limitations in paragraph two. Do you know what happens when researchers trust the comms office? Nothing! Nothing happens! It’s amazing. Thank you.",
+          "shot": "talkingCard",
+          "from": 468,
+          "audioFrames": 449,
+          "durationInFrames": 463
+        },
+        {
+          "lineId": "s10b_03",
+          "who": "maya",
+          "name": "Maya Torres",
+          "role": "Associate Director, University Communications",
+          "portrait": "maya.jpg",
+          "text": "Slower than I wanted. Better than I hoped. That trade usually goes the other way.",
+          "shot": "talkingCard",
+          "from": 931,
+          "audioFrames": 155,
+          "durationInFrames": 169
+        }
+      ]
+    },
+    {
+      "sceneId": "s10b",
+      "variant": "late",
+      "flagContext": {
+        "lateMiss": true
+      },
+      "file": "s10b_late.4070fd75.mp4",
+      "bg": "bg_coffee.jpg",
+      "title": "The Morning After",
+      "durationInFrames": 1314,
+      "segments": [
+        {
+          "lineId": "s10b_01",
+          "who": "narrator",
+          "name": "NARRATOR",
+          "role": "",
+          "portrait": null,
+          "text": "College Coffee. The Commons smells like cinnamon and cut grass. The provost reads a headline that promises exactly what the study delivered — no more, no less.",
+          "shot": "kenburns",
+          "from": 24,
+          "audioFrames": 430,
+          "durationInFrames": 444
+        },
+        {
+          "lineId": "s10b_02",
+          "who": "jordan",
+          "name": "Jordan Okafor",
+          "role": "Junior · Lead Researcher, CalmCampus Study",
+          "portrait": "jordan.jpg",
+          "text": "You wrote “shows promise” and put our limitations in paragraph two. Do you know what happens when researchers trust the comms office? Nothing! Nothing happens! It’s amazing. Thank you.",
+          "shot": "talkingCard",
+          "from": 468,
+          "audioFrames": 449,
+          "durationInFrames": 463
+        },
+        {
+          "lineId": "s10b_04",
+          "who": "maya",
+          "name": "Maya Torres",
+          "role": "Associate Director, University Communications",
+          "portrait": "maya.jpg",
+          "text": "We did miss College Coffee — provost announced it cold, story ran at eleven. Right isn’t always fast. Something to sit with: it also isn’t always slow.",
+          "shot": "talkingCard",
+          "from": 931,
+          "audioFrames": 333,
+          "durationInFrames": 347
+        }
+      ]
+    }
+  ]
+}

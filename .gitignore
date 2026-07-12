@@ -1,3 +1,4 @@
 tools/video/node_modules/
 tools/video/out/
+tools/video/public/
 .playwright-mcp/
